@@ -1,3 +1,3 @@
 # Our Team
 
-Meet the members behind our project
+Get to know about our team members
