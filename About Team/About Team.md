@@ -1,3 +1,3 @@
 # Our Team
 
-Get to know about our team members - Pratham, Inaaya, & Swasti
+Get to know our team members - Pratham, Inaaya, & Swasti
