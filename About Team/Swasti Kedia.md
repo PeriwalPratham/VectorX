@@ -12,7 +12,7 @@
 
 ## About Me
 
-I am Swasti Kedia, a Class 10 student at Podar International School, Powai (CBSE). I enjoy playing the piano, practicing martial arts, reading books, & exploring new fields. I love building things, which is what led me to robotics.
+**I am Swasti Kedia, a Class 10 student at Podar International School, Powai (CBSE). I enjoy playing the piano, practicing martial arts, reading books, & exploring new fields. I love building things, which is what led me to robotics.**
 ---
 
 ## Responsibilities in This Project
@@ -36,7 +36,7 @@ I am Swasti Kedia, a Class 10 student at Podar International School, Powai (CBSE
 
 ## Experience
 
-- **YTS+ – Robotics in Action**, Plaksha University
+- **YTS+ Robotics in Action**, Plaksha University
 - Independent robotics and programming projects
 - Experience with embedded systems, sensors, and autonomous robotics
 
