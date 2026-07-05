@@ -12,11 +12,11 @@
 
 ## Planned Components
 
-### Processing
+### Image Processing
 - Raspberry Pi 5
 - Raspberry Pi Camera Module (model TBD)
 
-### Microcontroller
+### Microcontroller - Motor Control & Sensors
 - ESP32 / Arduino / Seeeduino (final controller to be decided)
 
 ### Sensors
