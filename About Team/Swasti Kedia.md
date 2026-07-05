@@ -36,7 +36,7 @@
 
 ## Experience
 
-- **YTS+ Robotics in Action**, Plaksha University
+- YTS+ Robotics in Action, Plaksha University
 - Independent robotics and programming projects
 - Experience with different programming languages
 
