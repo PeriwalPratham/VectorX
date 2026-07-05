@@ -6,7 +6,7 @@
 
 ## Role
 
-**xyz**
+**To be Finalized**
 
 ---
 
@@ -38,7 +38,7 @@
 
 - **YTS+ Robotics in Action**, Plaksha University
 - Independent robotics and programming projects
-- Experience with embedded systems, sensors, and autonomous robotics
+- Experience with different programming languages
 
 ---
 
