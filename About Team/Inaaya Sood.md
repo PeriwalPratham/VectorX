@@ -1,11 +1,11 @@
- # # 👩‍💻 Inaaya Sood
+ # # Inaaya Sood
 
 ## **Role**
 > **To Be Finalized**
 
 ---
 
-# 🌟 About Me
+#  About Me
 
 I am a **14-year-old Class 9 student** at **SVKM JV Parekh International School** with a strong passion for **robotics, programming, and engineering**. I enjoy **reading, coding, painting, and 3D designing**, and I am always eager to explore new technologies and develop innovative solutions.
 
@@ -15,7 +15,7 @@ I believe that every project is an opportunity to learn something new, and I am 
 
 ---
 
-# 🛠️ Responsibilities in This Project
+#  Responsibilities in This Project
 
 - To Be Finalized
 - To Be Finalized
@@ -23,16 +23,16 @@ I believe that every project is an opportunity to learn something new, and I am 
 
 ---
 
-# 💻 Technical Skills
+#  Technical Skills
 
 ### Programming
-- 🐍 Python
-- 🤖 Arduino
-- 👁️ OpenCV
+-  Python
+- Arduino
+-  OpenCV
 
 ### Design & CAD
-- 🎨 Fusion 360
-- 🖥️ Blender
+-  Fusion 360
+-  Blender
 
 ### Robotics
 - Autonomous Programming
@@ -42,16 +42,16 @@ I believe that every project is an opportunity to learn something new, and I am 
 
 ---
 
-# 🏆 Experience
+#  Experience
 
-- 🥇 **VEX IQ Rapid Relay**
-- 🥇 **VEX IQ Rapid Relay Worlds**
-- 🤝 **VEX IQ Mix & Match**
-- 🤖 **IRL Robotics Competition**
+-  **VEX IQ Rapid Relay**
+-  **VEX IQ Rapid Relay Worlds**
+-  **VEX IQ Mix & Match**
+-  **IRL Robotics Competition**
 
 ---
 
-# 🎯 Goal
+#  Goal
 
 My goal is to expand my knowledge of **3D design** and **autonomous robotics** while developing a stronger understanding of engineering principles.
 
