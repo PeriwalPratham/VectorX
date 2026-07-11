@@ -53,7 +53,6 @@ I believe that every project is an opportunity to learn something new, and I am 
 
 #  Goal
 
-My goal is to expand my knowledge of **3D design** and **autonomous robotics** while developing a stronger understanding of engineering principles.
 
 Through this project, I hope to explore new design strategies, strengthen my problem-solving abilities, and gain valuable hands-on experience in designing, building, and programming autonomous robots. I aspire to create innovative, efficient, and reliable robotic systems while continuously improving my technical and engineering skills.
 
