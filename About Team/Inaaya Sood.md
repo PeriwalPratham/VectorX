@@ -33,6 +33,7 @@ I believe that every project is an opportunity to learn something new, and I am 
 ### Design & CAD
 -  Fusion 360
 -  Blender
+-  Onshape
 
 ### Robotics
 - Autonomous Programming
