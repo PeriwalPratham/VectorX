@@ -11,50 +11,40 @@ Servo steeringServo;
 const int pwmPin = 11;
 const int dirPin = 13;
 
-// Servo & Steering Angles
+// Servo & Steering Angles (Center 82, ±20 limit)
 const int SERVO_PIN = 9;
-const int STRAIGHT = 89;
-const int RIGHT = 69;
-const int LEFT = 119;
+const int STRAIGHT = 82;
+const int RIGHT = 62;
+const int LEFT = 102;
 
 // XSHUT Pins
 const int LEFT_XSHUT = 6;
 const int RIGHT_XSHUT = 7;
 
-// --- DYNAMIC & FIXED SPEED TUNING ---
-const int DRIVE_SPEED_MAX = 255;       // Maximum speed for normal driving
-const int DRIVE_SPEED_MIN = 200;       // Minimum speed during hard steering corrections
-const int TURN_SPEED = 230;            // Speed maintained through turns
-const int PARKING_MEASURE_PWM = 220;   // FIXED LOCKED PWM for distance/time linear measurement
+// --- HIGH-SPEED SPEED & TIMING TUNING ---
+const int DRIVE_SPEED = 210;          
+const int TURN_SPEED = 180;           
 
-// --- PARKING TIMING & COMPENSATION ---
-// Adjust 1.04 - 1.08 to compensate for Lap 3 battery voltage drop slowing down motors
-const float BATTERY_DECAY_FACTOR = 1.05; 
+const unsigned long WAIT_AFTER_WALL_MS = 120;   
+const unsigned long DRIVE_GRACE_PERIOD_MS = 350; 
 
-unsigned long T_start = 0;             // Time taken for start leg (Boot to Turn 1)
-unsigned long fullStraightStartTime = 0;
-unsigned long T_full_sum = 0;          // Accumulated total time of full straights
-int fullStraightCount = 0;            // Total full straights measured
-unsigned long T_target_park = 0;       // Calculated target run time for parking leg
-unsigned long parkingStartTime = 0;
-
-// --- CORNERING TIMING ---
-const unsigned long WAIT_AFTER_WALL_MS = 180;   
-const unsigned long DRIVE_GRACE_PERIOD_MS = 400; 
-
-const int WALL_LOST_CONFIRM_COUNT = 4; 
+const int WALL_LOST_CONFIRM_COUNT = 5; 
 const float TURN_TOLERANCE = 10.0;     
 
-// --- GYRO & PD TUNING ---
-const float KP_STRAIGHT = 1.3;
+// --- GYRO & HEADING KP ---
+const float KP_STRAIGHT = 1.2;
 
-// PD Wall Following Gains
-const float KP_WALL = 0.22;            
-const float KD_WALL = 0.11;            
+// --- HIGH-SPEED PD CONTROL TUNING ---
+const float KP_WALL = 0.12;            
+const float KD_WALL = 0.12;            
 const float DEFAULT_INNER_SETPOINT = 250.0; 
 
 const int TOF_MAX_VALID = 1200;        
-const int WALL_LOST_THRESHOLD = 1000;  
+const int WALL_LOST_THRESHOLD = 1000;   
+
+// Dynamic Track Safety Thresholds
+const float WALL_TOO_CLOSE_MM = 160.0;
+const float WALL_TOO_FAR_MM = 400.0;
 
 bool leftSensorOK = false;
 
@@ -62,9 +52,10 @@ bool leftSensorOK = false;
 bool innerIsLeft = false;              
 bool trackLayoutDetected = false;
 
-// PD Tracking Variables
+// PD Variables
 float lastError = 0.0;
 unsigned long lastPDTime = 0;
+bool pdInitialized = false; // Prevents startup derivative kick
 
 // ---------- MPU ----------
 #define MPU_ADDR 0x68
@@ -77,6 +68,9 @@ int wallLostCounter = 0;
 unsigned long driveStartTime = 0;
 unsigned long waitStart = 0;
 
+// Saved wall reading prior to starting the turn
+float preTurnInnerDist = 250.0;
+
 // ---------- State Machine ----------
 enum RobotState
 {
@@ -84,14 +78,13 @@ enum RobotState
   WAIT_AFTER_WALL,
   TURN_CORNER,
   WAIT_FOR_WALL,
-  PARK_FINAL_LEG,
   STOPPED
 };
 
 RobotState state = DRIVE;
 float targetHeading = 0;
-int cornerCount = 0;       
-int lapCount = 0;          
+int cornerCount = 0;      
+int lapCount = 0;         
 const int TARGET_LAPS = 3;
 
 // Circular Math Engine
@@ -102,7 +95,7 @@ float getAngleError(float current, float target) {
   return error;
 }
 
-// PD Steering Calculation with Cosine Projection
+// PD Steering Calculation with Cosine Correction
 int calculatePDWallSteer(uint16_t rawLeft, uint16_t rawRight, float headingError) {
   unsigned long now = millis();
   float dt = (now - lastPDTime) / 1000.0;
@@ -144,6 +137,13 @@ int calculatePDWallSteer(uint16_t rawLeft, uint16_t rawRight, float headingError
     }
   }
 
+  // FIRST RUN PROTECTION: Skip derivative kick on startup frame
+  if (!pdInitialized) {
+    lastError = error;
+    pdInitialized = true;
+    return 0; 
+  }
+
   float dError = (error - lastError) / dt;
   lastError = error;
 
@@ -159,16 +159,16 @@ void setup() {
   steeringServo.attach(SERVO_PIN);
   steeringServo.write(STRAIGHT);
   stopMotor();
-
   Wire.begin();
-  Wire.setClock(400000); 
 
+  // MPU Setup
   Wire.beginTransmission(MPU_ADDR);
   Wire.write(0x6B);        
   Wire.write(0x00);        
   Wire.endTransmission(true);
-  delay(50);
+  delay(100);
 
+  // DLPF Filter (~42Hz)
   Wire.beginTransmission(MPU_ADDR);
   Wire.write(0x1A); 
   Wire.write(0x03); 
@@ -181,27 +181,42 @@ void setup() {
   digitalWrite(RIGHT_XSHUT, LOW);
   delay(10);
 
+  // LEFT SENSOR
   digitalWrite(LEFT_XSHUT, HIGH);
   delay(10);
   leftSensorOK = leftSensor.init();
   if (leftSensorOK) {
     leftSensor.setAddress(0x30);
-    leftSensor.setTimeout(50);
-    leftSensor.setMeasurementTimingBudget(20000); 
+    leftSensor.setTimeout(100);
     leftSensor.startContinuous();
   }
 
+  // RIGHT SENSOR
   digitalWrite(RIGHT_XSHUT, HIGH);
   delay(10);
   if (!rightSensor.init()) {
     while (1); 
   }
   rightSensor.setAddress(0x31);
-  rightSensor.setTimeout(50);
-  rightSensor.setMeasurementTimingBudget(20000); 
+  rightSensor.setTimeout(100);
   rightSensor.startContinuous();
 
+  // Ensure car is completely stationary during calibration
   calibrateGyro();
+
+  // WARM-UP & PRE-FLIGHT LAYOUT DETECTION (Prevents 100ms inverted control)
+  delay(150); // Allow sensors to capture stable readings
+  uint16_t initRight = rightSensor.readRangeContinuousMillimeters();
+  uint16_t initLeft = leftSensorOK ? leftSensor.readRangeContinuousMillimeters() : 65535;
+
+  if (initLeft < initRight) {
+    innerIsLeft = true;   
+  } else {
+    innerIsLeft = false;  
+  }
+  trackLayoutDetected = true;
+
+  // Initialize timers right before moving
   lastTime = micros();
   lastPDTime = millis();
   targetHeading = 0;
@@ -215,25 +230,19 @@ void loop()
   uint16_t rightDistance = rightSensor.readRangeContinuousMillimeters();
   uint16_t leftDistance = leftSensorOK ? leftSensor.readRangeContinuousMillimeters() : 65535;
 
-  // AUTO-DETECT CENTER/INNER WALL AT START
-  if (!trackLayoutDetected && (millis() - driveStartTime > 80)) {
-    innerIsLeft = (leftDistance < rightDistance);
-    trackLayoutDetected = true;
-  }
-
   switch(state)
   {
-    //---------------- DRIVE ----------------
     case DRIVE:
       {
         float headingError = getAngleError(heading, targetHeading);
         int gyroSteer = (int)(headingError * KP_STRAIGHT);
+
         int wallSteer = calculatePDWallSteer(leftDistance, rightDistance, headingError);
 
-        int targetServo = constrain(STRAIGHT + gyroSteer + wallSteer, RIGHT, LEFT);
-        steeringServo.write(targetServo);
+        int targetServo = STRAIGHT + gyroSteer + wallSteer;
+        steeringServo.write(constrain(targetServo, RIGHT, LEFT));
 
-        moveForward(PARKING_MEASURE_PWM);
+        moveForward(DRIVE_SPEED);
 
         bool immunityActive = (millis() - driveStartTime < DRIVE_GRACE_PERIOD_MS);
 
@@ -248,42 +257,41 @@ void loop()
         if (isInnerWallLost && !immunityActive) {
             wallLostCounter++;
         } else {
+            if (innerDistance < TOF_MAX_VALID && innerDistance > 0) {
+              preTurnInnerDist = innerDistance;
+            }
             wallLostCounter = 0; 
         }
 
         if (wallLostCounter >= WALL_LOST_CONFIRM_COUNT) {
-            // 75 ms buffer delay before switching states
-            delay(75);
-
             wallLostCounter = 0;
             waitStart = millis();
-
-            // Store precise straight durations upon confirming wall loss
-            if (cornerCount == 0) {
-              T_start = waitStart - driveStartTime; // Initial partial leg duration
-            } else {
-              T_full_sum += (waitStart - fullStraightStartTime); // Full straight duration
-              fullStraightCount++;
-            }
-
             state = WAIT_AFTER_WALL;
         }
       }
       break;
 
-    //---------------- WAIT AFTER WALL ----------------
     case WAIT_AFTER_WALL:
       {
         float headingError = getAngleError(heading, targetHeading);
         int gyroSteer = (int)(headingError * KP_STRAIGHT);
         steeringServo.write(constrain(STRAIGHT + gyroSteer, RIGHT, LEFT));
-        moveForward(PARKING_MEASURE_PWM);
+        moveForward(DRIVE_SPEED);
 
         if (millis() - waitStart >= WAIT_AFTER_WALL_MS) {
+           
+           float baseTurnAngle = 90.0;
+
+           if (preTurnInnerDist < WALL_TOO_CLOSE_MM) {
+             baseTurnAngle = 82.0; 
+           } else if (preTurnInnerDist > WALL_TOO_FAR_MM) {
+             baseTurnAngle = 98.0; 
+           }
+
            if (innerIsLeft) {
-             targetHeading -= 90.0; 
+             targetHeading -= baseTurnAngle; 
            } else {
-             targetHeading += 90.0; 
+             targetHeading += baseTurnAngle; 
            }
            
            if (targetHeading >= 360.0) targetHeading -= 360.0;
@@ -296,7 +304,6 @@ void loop()
       }
       break;
 
-    //---------------- TURN CORNER ----------------
     case TURN_CORNER:
       {
         steeringServo.write(innerIsLeft ? LEFT : RIGHT);
@@ -312,25 +319,28 @@ void loop()
               lapCount++;
           }
 
-          // Always go to WAIT_FOR_WALL to re-establish proper timing baseline
-          moveForward(PARKING_MEASURE_PWM);
-          waitStart = millis(); 
-          state = WAIT_FOR_WALL;
+          if (lapCount >= TARGET_LAPS) {
+              stopMotor();
+              state = STOPPED;
+          } else {
+              moveForward(DRIVE_SPEED);
+              waitStart = millis(); 
+              state = WAIT_FOR_WALL;
+          }
         }
       }
       break;
 
-    //---------------- WAIT FOR WALL ----------------
     case WAIT_FOR_WALL:
       {
         float headingError = getAngleError(heading, targetHeading);
         int gyroSteer = (int)(headingError * KP_STRAIGHT);
         int wallSteer = calculatePDWallSteer(leftDistance, rightDistance, headingError);
 
-        int targetServo = constrain(STRAIGHT + gyroSteer + wallSteer, RIGHT, LEFT);
-        steeringServo.write(targetServo);
+        int targetServo = STRAIGHT + gyroSteer + wallSteer;
+        steeringServo.write(constrain(targetServo, RIGHT, LEFT));
 
-        moveForward(PARKING_MEASURE_PWM);
+        moveForward(DRIVE_SPEED);
 
         uint16_t innerDistance = innerIsLeft ? leftDistance : rightDistance;
         bool innerSensorOK_Check = innerIsLeft ? !leftSensor.timeoutOccurred() : !rightSensor.timeoutOccurred();
@@ -341,41 +351,7 @@ void loop()
         if (innerWallReacquired || timeoutTriggered) {
             wallLostCounter = 0;
             driveStartTime = millis(); 
-            fullStraightStartTime = driveStartTime; 
-
-            // After 12 corners, initiate parking from the wall re-acquisition baseline
-            if (cornerCount >= 12) {
-              unsigned long T_full_avg = (fullStraightCount > 0) ? (T_full_sum / fullStraightCount) : T_start;
-              
-              if (T_full_avg > T_start) {
-                T_target_park = (unsigned long)((T_full_avg - T_start) * BATTERY_DECAY_FACTOR);
-              } else {
-                T_target_park = 0;
-              }
-
-              parkingStartTime = millis();
-              state = PARK_FINAL_LEG;
-            } else {
-              state = DRIVE;
-            }
-        }
-      }
-      break;
-
-    //---------------- PARK FINAL LEG ----------------
-    case PARK_FINAL_LEG:
-      {
-        float headingError = getAngleError(heading, targetHeading);
-        int gyroSteer = (int)(headingError * KP_STRAIGHT);
-        int wallSteer = calculatePDWallSteer(leftDistance, rightDistance, headingError);
-
-        int targetServo = constrain(STRAIGHT + gyroSteer + wallSteer, RIGHT, LEFT);
-        steeringServo.write(targetServo);
-        moveForward(PARKING_MEASURE_PWM);
-
-        if (millis() - parkingStartTime >= T_target_park) {
-            activeBrake();
-            state = STOPPED;
+            state = DRIVE;
         }
       }
       break;
@@ -389,13 +365,6 @@ void loop()
 void moveForward(int speedValue) {
   digitalWrite(dirPin, HIGH);
   analogWrite(pwmPin, speedValue);
-}
-
-void activeBrake() {
-  digitalWrite(dirPin, LOW);
-  analogWrite(pwmPin, 200);
-  delay(80);
-  analogWrite(pwmPin, 0);
 }
 
 void stopMotor() {
@@ -416,7 +385,7 @@ void updateHeading() {
 
 void calibrateGyro() {
   long sum = 0;
-  const int samples = 150; 
+  const int samples = 500;
   for (int i = 0; i < samples; i++) {
     Wire.beginTransmission(MPU_ADDR);
     Wire.write(0x47);
@@ -424,7 +393,7 @@ void calibrateGyro() {
     Wire.requestFrom(MPU_ADDR, 2, true);
     int16_t gz = Wire.read() << 8 | Wire.read();
     sum += gz;
-    delay(1);
+    delay(10);
   }
   gyroOffsetZ = (sum / (float)samples) / 131.0;
 }
