@@ -1,7 +1,7 @@
 # VectorX
 ### WRO Future Engineers 2026
 
-<img width="2720" height="1600" alt="VectorX logo" src="https://github.com/user-attachments/assets/83d637e2-fa64-4a6b-8901-bce1fc41e204" />
+<img width="501" height="570" alt="VectorX Logo" src="https://github.com/user-attachments/assets/5b4f19d7-6c34-4ac3-b680-ea389b7f9f41" />
 
 ## Table of Contents
 
