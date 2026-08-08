@@ -1,3 +1,3 @@
 # VectorX
 
-### WRO FE 2026
+### WRO Future Engineers 2026
