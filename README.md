@@ -2,6 +2,7 @@
 ## WRO Future Engineers 2026
 
 <img width="501" height="570" alt="VectorX Logo" src="https://github.com/user-attachments/assets/5b4f19d7-6c34-4ac3-b680-ea389b7f9f41" />
+
 VectorX is our autonomous vehicle developed for the WRO Future Engineers 2026 competition.
 This repository documents our engineering process, mechanical and electrical systems, software architecture, autonomous navigation, testing, and design iterations.
 
