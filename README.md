@@ -111,6 +111,16 @@ This repository documents our engineering process, mechanical and electrical sys
 
 ### Controllers
 
+<img width="1600" height="1052" alt="ArduinoUno_R3_Front-3654177212" src="https://github.com/user-attachments/assets/e9da40f3-1fdb-42d2-8113-28963e8ecdc3" />
+
+-
+-
+-
+-
+-
+
+<img width="474" height="473" alt="OIP-1711219644" src="https://github.com/user-attachments/assets/414433e6-4477-445a-ad29-f6cabc85f16f" />
+
 
 
 ### Sensors
