@@ -110,6 +110,11 @@ This repository documents our engineering process, mechanical and electrical sys
 
 #### Camera
 
+<img width="1400" height="1050" alt="2-114993030-raspberry-pi-camera-3-wide-font-534121739" src="https://github.com/user-attachments/assets/5c6cab85-ed41-4f66-8147-8fbd5683255c" />
+
+- **Model:** Raspberry Pi Camera Module 3 Wide
+- **Sensor:** Sony IMX708, 12MP
+
 #### IMU
 
 <img width="1024" height="694" alt="mpu6050" src="https://github.com/user-attachments/assets/43787b9a-8cb0-4fca-b6b4-922ac4cd07ab" />
