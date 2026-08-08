@@ -89,6 +89,7 @@ This repository documents our engineering process, mechanical and electrical sys
 #### Drive Motor
 
 #### Motor Driver
+<img width="474" height="474" alt="OIP-3428776098" src="https://github.com/user-attachments/assets/e974975c-841e-4834-8ada-cf40c2051d88" />
 
 ### Steering
 
