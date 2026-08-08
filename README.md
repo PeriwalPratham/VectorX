@@ -89,11 +89,15 @@ This repository documents our engineering process, mechanical and electrical sys
 #### Drive Motor
 
 #### Motor Driver
+
 <img width="474" height="474" alt="OIP-3428776098" src="https://github.com/user-attachments/assets/e974975c-841e-4834-8ada-cf40c2051d88" />
 
 ### Steering
 
 #### Servo Motor
+
+<img width="1200" height="1200" alt="REV-41-3334-Smart_Robot_Servo_V2-Balanced_INSIDE__28225 1753214770-3286525541" src="https://github.com/user-attachments/assets/112df6cb-7e90-4af8-a5c2-14de61a694c0" />
+
 
 ---
 
@@ -106,6 +110,8 @@ This repository documents our engineering process, mechanical and electrical sys
 #### Voltage Regulator
 
 ### Controllers
+
+
 
 ### Sensors
 
