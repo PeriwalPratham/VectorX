@@ -121,6 +121,13 @@ This repository documents our engineering process, mechanical and electrical sys
 
 #### Distance Sensors
 
+<img width="800" height="800" alt="TOFxxxC-4-1816875055" src="https://github.com/user-attachments/assets/e5e50b81-aab1-44f8-a4a9-a0db099a9dc4" />
+
+- **Model:** TOF200C (VL53L0X sensor)
+- **Type:** Time-of-Flight (ToF) laser distance sensor
+- **Function** Measures distance between the robot and the inner and outer wall
+- **Interface** 
+
 ### Wiring Diagram
 
 ### PCB Design
