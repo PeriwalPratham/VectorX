@@ -111,6 +111,12 @@ This repository documents our engineering process, mechanical and electrical sys
 #### Camera
 
 #### IMU
+<img width="501" height="570" alt="mpu6050" src="https://github.com/user-attachments/assets/mpu6050.jpg" />
+
+- **Model:** MPU-6050
+- **Type:** 6-axis IMU (3-axis accelerometer + 3-axis gyroscope)
+- **Function:** Measures orientation and angular velocity to track turns and detect collisions
+- **Interface:** I2C (SDA/SCL)
 
 #### Distance Sensors
 
