@@ -111,7 +111,8 @@ This repository documents our engineering process, mechanical and electrical sys
 #### Camera
 
 #### IMU
-<img width="501" height="570" alt="mpu6050" src="https://github.com/user-attachments/assets/mpu6050.jpg" />
+
+<img width="1024" height="694" alt="mpu6050" src="https://github.com/user-attachments/assets/43787b9a-8cb0-4fca-b6b4-922ac4cd07ab" />
 
 - **Model:** MPU-6050
 - **Type:** 6-axis IMU (3-axis accelerometer + 3-axis gyroscope)
