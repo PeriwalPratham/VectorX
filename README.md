@@ -6,6 +6,11 @@
 VectorX is our autonomous vehicle developed for the WRO Future Engineers 2026 competition.
 This repository documents our engineering process, mechanical and electrical systems, software architecture, autonomous navigation, testing, and design iterations.
 
+[![Website](https://img.shields.io/badge/Website-Visit-blue?logo=googlechrome&logoColor=white)](https://yourwebsite.com)
+![Future Engineers](https://img.shields.io/badge/Future%20Engineers-0057B7)
+![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-A22846?logo=raspberrypi&logoColor=white)
+![Arduino Uno](https://img.shields.io/badge/Arduino%20Uno-00979D?logo=arduino&logoColor=white)
+
 ## Table of Contents
 
 - [Introduction](#introduction)
