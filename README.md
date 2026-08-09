@@ -131,8 +131,6 @@ This repository documents our engineering process, mechanical and electrical sys
 
 - **Model:** Raspberry Pi Camera Module 3 Wide
 - **Sensor:** Sony IMX708, 12MP
-  #!/usr/bin/env python3
-
 import argparse
 import sys
 import time
@@ -159,7 +157,6 @@ class ColorDetection:
     area: float = 0.0
 
 
-# ---------------- HSV RANGES ----------------
 ORANGE_LOWER = (5, 100, 80)
 ORANGE_UPPER = (28, 255, 255)
 
@@ -172,7 +169,6 @@ SEND_REPEAT_DELAY_SEC = 0.3
 
 PRE_CONNECT_DETECT_TIMEOUT_SEC = 6.0
 
-# ---------------- COMMUNICATION LAYER SETTINGS ----------------
 ARDUINO_READY_TIMEOUT_SEC = 15.0
 ACK_WAIT_TIMEOUT_SEC = 1.0
 ACK_RETRY_INTERVAL_SEC = 0.3
@@ -187,7 +183,7 @@ def make_camera(camera_index: int):
         )
         picam.configure(cfg)
         picam.start()
-        time.sleep(2)  # Sensor warm-up before serial connection
+        time.sleep(2)
         return ("picamera2", picam)
 
     cap = cv2.VideoCapture(camera_index)
@@ -290,8 +286,6 @@ def detect_direction(frame):
     return direction, debug
 
 
-# ---------------- COMMUNICATION HELPERS ----------------
-
 def read_arduino_line(ser):
     try:
         if ser.in_waiting == 0:
@@ -349,12 +343,11 @@ def send_command_with_ack(ser, command,
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", default="/dev/ttyUSB0", help="Serial port for Arduino")
-    parser.add_argument("--baud", type=int, default=115200, help="Baud rate")
-    parser.add_argument("--camera", type=int, default=0, help="Camera index")
+    parser.add_argument("--port", default="/dev/ttyUSB0")
+    parser.add_argument("--baud", type=int, default=115200)
+    parser.add_argument("--camera", type=int, default=0)
     args = parser.parse_args()
 
-    # PHASE 1: Vision before Serial Connection
     print("Opening camera and detecting direction (Arduino not connected yet)...")
     camera_kind, cam = make_camera(args.camera)
 
@@ -384,33 +377,46 @@ def main():
             stable_count = 0
             last_direction = None
 
-        cv2.imshow("Direction Detection", debug)
+        cv2.imshow("WRO Direction Detection", debug)
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
             break
 
         if time.time() - detect_start > PRE_CONNECT_DETECT_TIMEOUT_SEC:
-            print("WARNING: Timeout reached before confirming direction. Proceeding with default.")
+            print("WARNING: could not confirm direction before timeout. "
+                  "Proceeding without one - Arduino will use its default.")
             break
 
-    # PHASE 2: Open Serial & Wait for Arduino
-    print("Opening serial connection...")
+    print("Opening serial (this resets the Arduino)...")
+
     ser = serial.Serial(args.port, args.baud, timeout=0.5)
+    print("Serial opened:", ser.port)
+
     ser.reset_input_buffer()
 
-    print("Waiting for Arduino READY signal...")
-    if wait_for_arduino_ready(ser):
+    print("Waiting for Arduino READY (setup + gyro calibration + ToF init)...")
+    arduino_ready = wait_for_arduino_ready(ser)
+    if arduino_ready:
         print("Arduino is READY.")
     else:
-        print("WARNING: READY timeout. Proceeding with send retries.")
+        print("WARNING: never saw READY from Arduino before timeout. "
+              "Proceeding anyway - the command below will still retry for ACK.")
 
     direction_sent = False
+
     if confirmed_direction is not None:
         direction_sent = send_command_with_ack(ser, confirmed_direction)
         if direction_sent:
             print(f"Direction {confirmed_direction} ACKed by Arduino.")
+        else:
+            print(f"WARNING: Arduino never ACKed {confirmed_direction}. "
+                  "It will keep being retried from the main loop below.")
+    else:
+        print("No confirmed direction yet - it will be sent from the main loop below "
+              "as soon as the camera confirms one.")
 
-    # PHASE 3: Main Execution Loop
+    print("Finished startup handshake.")
+
     while True:
         drain_arduino_lines(ser)
 
@@ -435,7 +441,7 @@ def main():
             last_direction = None
             direction_sent = False
 
-        cv2.imshow("Direction Detection", debug)
+        cv2.imshow("WRO Direction Detection", debug)
         key = cv2.waitKey(1) & 0xFF
 
         if key == ord("q"):
@@ -448,7 +454,6 @@ def main():
             if last_direction is not None:
                 send_command_with_ack(ser, last_direction)
 
-    # Clean Exit
     try:
         send_command_with_ack(ser, "STOP", max_attempts=3)
     except Exception:
