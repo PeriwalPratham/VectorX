@@ -529,6 +529,29 @@ if __name__ == "__main__":
         sys.exit(0)
 
 ---
+## 📌 System Explanation
+
+> The script uses a Raspberry Pi camera to determine the driving direction (**Clockwise** or **Anti-clockwise**) by checking whether the **orange line** or **blue line** is higher in the frame. It confirms the direction first, sends it to the Arduino, and waits for sensor calibration to complete before starting.
+
+---
+
+### 👁️ Computer Vision Breakdown
+
+#### 1. Color Isolation
+* **Functions:** `cv2.cvtColor()`, `cv2.inRange()`
+* **Role:** Converts video frames to the **HSV** color space to ignore lighting shifts, creating black-and-white masks for orange and blue targets.
+
+#### 2. Noise Filtering
+* **Function:** `cv2.morphologyEx()`
+* **Role:** Erases random background speckles and fills internal gaps within detected color patches.
+
+#### 3. Position Tracking
+* **Functions:** `cv2.findContours()`, `cv2.moments()`
+* **Role:** Finds shape outlines and calculates their vertical center coordinates (`cy`) to determine which color sits higher in the frame.
+
+#### 4. Visual Overlay & Interaction
+* **Functions:** `cv2.fitLine()`, `cv2.line()`, `cv2.imshow()`
+* **Role:** Fits a straight reference line through each color blob, renders status text on-screen, and processes keyboard controls (`q`, `s`, `p`).
 
 #### Inertial Measurement Unit (IMU)
 <img width="400" alt="MPU6050 IMU Module" src="https://github.com/user-attachments/assets/43787b9a-8cb0-4fca-b6b4-922ac4cd07ab" />
