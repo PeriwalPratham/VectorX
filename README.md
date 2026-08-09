@@ -86,10 +86,10 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
       +-----------+-----------+   +----------------------+
                   |
                   v
-      +-----------------------+
-      | N20 Drive Motor       |
-      | (w/ Encoder Feedback) |
-      +-----------------------+
+      +-------------------------+
+      | N20 Drive Motor         |
+      | (with Encoder Feedback) |
+      +-------------------------+
 ```
 #### How this Loop Works:
 
