@@ -14,7 +14,7 @@
 
 ---
 
-## 🧭 So, what can you find here?
+## So, what can you find here?
 
 1. [The Project](#1-the-project)
 2. [The Team](#2-the-team)
@@ -35,30 +35,127 @@
 ## 1. The Project
 
 ### 1.1 Overview
+**VectorX** is our self-driving car built for the **World Robot Olympiad (WRO) Future Engineers (FE) 2026** competition. Our goal was to build a fast, reliable car that can navigate an obstacle-filled track autonomously. We 3D-printed our custom chassis & run everything on it using a "dual brain" method. It combines a **Raspberry Pi 5** for image processing & obstacle detection and an **Arduino Uno** for motor & sensor control.
+
 ### 1.2 The Challenge
+The competition has two main challenges that the car needs to complete - 
+
+* **Open Challenge -** The car must drive **3 consecutive laps** without hitting the walls in the fastest possible time. The drive direction (clockwise or counter-clockwise) is randomly picked right before the round. The car needs to steer through sharp 90° turns & stop on its own (at its starting position) after finishing the third lap.
+* **Obstacle Challenge -** The car still drives 3 laps, but now there are **red and green traffic pillars** randomly placed on the track. Using the camera, the car must steer to the **right of red pillars** and to the **left of green pillars**. Once 3 laps have been completed, the car will look for the **magenta parking plates** and **parallel park** inside them.
+  
 ### 1.3 Our Approach
+
+When building VectorX, we had 3 simple goals - keeping the electronics stable, making the reaction time as fast as possible, and creating a car that runs reliably.
+
+* **Two Brains -** We split up the computing work so nothing gets overloaded. The **Raspberry Pi 5** handles the camera feed and obstacle detection (OpenCV). The **Arduino Uno** reacts to this by moving the steering servo, adjusting motor speed, and reading sensor inputs.
+* **Car-Style Steering -** VectorX steers like a real car - the front wheels use **Ackermann steering** to turn smoothly, and the rear axle uses a **mechanical differential** so the back wheels can spin at slightly different speeds during sharp turns. 
+* **Smart Power Supply -** Fast DC motors drain the battery power while accelerating, causing the Raspberry Pi to crash (a brownout). To stop this, our 11.1V battery powers the motors directly, while a regulated 5V buck converter powers the Pi, Arduino, and sensors—all linked safely through a common ground.
+* **Combining Multiple Sensors -** No single sensor is perfect, and the track is always changing. Instead of relying on just one input, we combine our **wide-angle camera (Pi Camera Module 3), laser distance sensors (ToF), and gyroscope (IMU)** to double-check every movement & increase accuracy.
+
 ### 1.4 System Overview
+VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
+```text
+       +-------------------------------------------------+
+       |           Pi Camera Module 3 Wide               |
+       +-----------------------+-------------------------+
+                               |
+                               | Captures Live Track Frames (CSI)
+                               v
+       +-------------------------------------------------+
+       |                 Raspberry Pi 5                  |
+       |  - Runs OpenCV vision processing                |
+       |  - Detects red/green pillars & parking lines    |
+       |  - Decides steering direction & speed           |
+       +-----------------------+-------------------------+
+                               |
+                               | Sends Steering & Speed Commands 
+                               | (USB Cable)
+                               v
+       +-------------------------------------------------+
+       |                  Arduino Uno                    |
+       |  - Reads MPU-6050 Gyro & ToF Distance Sensors   |
+       |  - Runs PID motor control loops                 |
+       |  - Sends precise physical output signals        |
+       +--------------+-------------------+--------------+
+                      |                   |
+      PWM Speed & DIR |                   | Steering PWM
+                      v                   v
+      +-----------------------+   +----------------------+
+      | DFRobot TB6612FNG     |   | REV Smart Robot      |
+      | Motor Driver          |   | Steering Servo       |
+      +-----------+-----------+   +----------------------+
+                  |
+                  v
+      +-----------------------+
+      | N20 Drive Motor       |
+      | (w/ Encoder Feedback) |
+      +-----------------------+
+```
+#### How this Loop Works:
+
+1. **Sense -** The Pi Camera 3 Wide captures live track video, while the ToF distance sensors and MPU-6050 gyro measure wall distances and car orientation.
+2. **Decide -** The Raspberry Pi 5 processes the camera feed using OpenCV to detect red/green traffic pillars and track lines. It calculates the necessary steering angle and target speed, then sends these commands to the Arduino over the USB cable.
+3. **Act -** The Arduino Uno receives the speed and steering values, adjusts the REV Smart Servo for front-wheel Ackermann steering, and controls power to the drive motor via the TB6612FNG driver.
 ---
 
 ## 2. The Team
 
+<div align="center">
+
 ![Team Photo](photos/team_photo.jpg)
 
-### 2.1 Team Members & Coach
-* **Team Name:** Vector X
-* **Country:** India
-* **Members:** Pratham Periwal, Inaaya Sood, Swasti Kedia
-* **Coach:** Chirag Sir
-* **Category:** WRO Future Engineers 2026 (Self-Driving Cars Challenge)
+### Team VectorX
+**Country:** India
 
-### 2.2 Team Photo
-### 2.3 Member Roles & Contributions
-* **Pratham Periwal:** Lead Software & Computer Vision Engineer
-* **Inaaya Sood:** Mechanical Systems & CAD Designer
-* **Swasti Kedia:** Electronics & Sensor Integration Engineer
+</div>
+
+### 2.1 Team Members & Coach
+
+#### Pratham Periwal
+<table>
+  <tr>
+    <td width="200" align="center">
+      <img src="About Team/pratham.jpg" width="180" alt="Pratham Periwal" />
+    </td>
+    <td>
+      Hi, I'm Pratham! I like xyz.
+    </td>
+  </tr>
+</table>
+
+#### Inaaya Sood
+<table>
+  <tr>
+    <td width="200" align="center">
+      <img src="About Team/inaaya.jpg" width="180" alt="Inaaya Sood" />
+    </td>
+    <td>
+      Hi, I'm Inaaya! I like xyz.
+    </td>
+  </tr>
+</table>
+
+#### Swasti Kedia
+<table>
+  <tr>
+    <td width="200" align="center">
+      <img src="About Team/Swasti Kedia.png" width="180" alt="Swasti Kedia" />
+    </td>
+    <td>
+      Hi, I'm Swasti! I like xyz.
+    </td>
+  </tr>
+</table>
+
+#### Chirag Sir (Coach)
+Helped with xyz
+
+### 2.2 Member Roles & Contributions
+* **Pratham Periwal:** xyz
+* **Inaaya Sood:** xyz
+* **Swasti Kedia:** xyz
 
 ---
-
 ## 3. The Vehicle
 
 ### 3.1 Vehicle Overview
