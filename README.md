@@ -160,6 +160,19 @@ I believe that every project is an opportunity to learn something new, and I am 
 
 ### 2.2 Team Identity & Story
 
+#### Why "VectorX"?
+In physics, a **vector** has two components - direction and magnitude. That is basically what our car needs to do - figure out where to steer and how fast to drive at any given millisecond. 
+
+The **X** stands for the unknowns. During the competition, we won't know the pillar layouts, driving direction, or track placement in advance. So, **VectorX** is basically a car that can handle any situation, no matter how hard it is.
+#### The Logo
+<div align="center">
+
+<img width="352" height="401" alt="VectorX Logo" src="https://github.com/user-attachments/assets/3dd50386-06d9-41ec-b475-0aad7c5dafc4" />
+
+</div>
+
+We wanted a clean, modern logo for our team. The design uses a styled 'X' with sharp arrows to mirror our team name and the dynamic steering of our car.
+
 ---
 
 ## 3. The Vehicle
