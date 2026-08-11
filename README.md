@@ -178,6 +178,9 @@ We wanted a clean, modern logo for our team. The design uses a styled 'X' with s
 ## 3. The Vehicle
 
 ### 3.1 Vehicle Overview
+
+Our Robot has been made after many iterations, with changes in ideology and thought; each component has been tested multiple times before being added to our build. Many parts have been tested against other components in the same category to see which fit our build ideology better. The main goal of our build has been to be simple,efficient and reliable while keeping up with the latest trends.
+
 ### 3.2 Key Specifications & Hardware Summary
 ### 3.3 Multi-View Photographs
 ### 3.4 Demonstration Videos
@@ -200,6 +203,15 @@ We wanted a clean, modern logo for our team. The design uses a styled 'X' with s
 ### 5.1 Chassis & Kinematics
 ### 5.2 Drive System & Differential
 ### 5.3 Steering System
+Our steering system depends on a servo motor.We tried a couple of different Servo motors including the mg90s and it's plastic version the Sg90.However These did not fit our build and had many problems including calibration drift and jittering.
+Hence we settled on the **Rev robotics smart servo**
+
+<img width="474" height="474" alt="OIP-3474533807" src="https://github.com/user-attachments/assets/ea54b908-6f74-498b-b326-aa50131c07f4" />
+
+This had many advantages including that of having a higher torque,having all metal gears which made them resistant to damage.While we tested they also had less jitter allowing us to control it better.
+
+
+
 ### 5.4 Motors, Drivers & Selection Rationale
 ### 5.5 Speed & Torque Calculations
 ### 5.6 Mechanical Design Decisions
