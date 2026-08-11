@@ -149,7 +149,7 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
       <img src="About Team/Swasti Kedia.png" width="180" alt="Swasti Kedia" />
     </td>
     <td>
-      Hi, I'm Swasti! I like xyz.
+      I am a 14-year-old, Class 10 student at Podar International School, Powai (CBSE). I enjoy playing the piano, practicing martial arts, reading books, running & exploring new fields. I love building things & doing hands-on work, which led me to robotics.
     </td>
   </tr>
 </table>
