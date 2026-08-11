@@ -203,16 +203,25 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 ### 5.1 Chassis & Kinematics
 ### 5.2 Drive System & Differential
 ### 5.3 Steering System
-Our steering system depends on a servo motor.We tried a couple of different Servo motors including the mg90s and it's plastic version the Sg90.However These did not fit our build and had many problems including calibration drift and jittering.
-Hence we settled on the **Rev robotics smart servo**
 
 <img width="474" height="474" alt="OIP-3474533807" src="https://github.com/user-attachments/assets/ea54b908-6f74-498b-b326-aa50131c07f4" />
-
+Our steering system depends on a servo motor.We tried a couple of different Servo motors including the mg90s and it's plastic version the Sg90.However These did not fit our build and had many problems including calibration drift and jittering.
+Hence we settled on the **Rev robotics smart servo**
 This had many advantages including that of having a higher torque,having all metal gears which made them resistant to damage.While we tested they also had less jitter allowing us to control it better.
 
 
 
 ### 5.4 Motors, Drivers & Selection Rationale
+<img width="474" height="474" alt="OIP-1389537309" src="https://github.com/user-attachments/assets/1a5511b5-4d45-442c-b605-7e1487fcc4c8" />
+
+For our motor we tried and tested many intonations of the n20 motor with different rpm. These were fast,produces enough torque and were cheap to test out. Moreover we could add a encoder to this which we tested later on.
+
+<img width="474" height="474" alt="OIP-2779162229" src="https://github.com/user-attachments/assets/95f74a67-df66-483d-a2ee-9175d4e9228c" />
+
+For our motor driver we tested 2 mainly the L298p and the TB6612FNG, we ended up using the TB6612FNG as L298p had many problems including voltage fluctuations not allowing our motors to get full voltage and would create noise disrupting the working of other components.It also contains extra parts which had no purpose for example a buzzer which increasing the mass of our robot.The TB6612FNG had other advantages including its small dimensions newer technology and reduced voltage fluctuations 
+
+
+
 ### 5.5 Speed & Torque Calculations
 ### 5.6 Mechanical Design Decisions
 ### 5.7 Mechanical Iterations
