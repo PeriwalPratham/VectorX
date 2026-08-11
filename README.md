@@ -116,9 +116,9 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
 
 </div>
 
-### 2.1 Team Members & Coach
+### 2.1 Team Members & Roles
 
-#### Pratham Periwal
+#### Pratham Periwal - role
 <table>
   <tr>
     <td width="200" align="center">
@@ -130,7 +130,7 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
   </tr>
 </table>
 
-#### Inaaya Sood
+#### Inaaya Sood - role
 <table>
   <tr>
     <td width="200" align="center">
@@ -146,7 +146,7 @@ I believe that every project is an opportunity to learn something new, and I am 
   </tr>
 </table>
 
-#### Swasti Kedia
+#### Swasti Kedia - role
 <table>
   <tr>
     <td width="200" align="center">
@@ -158,13 +158,7 @@ I believe that every project is an opportunity to learn something new, and I am 
   </tr>
 </table>
 
-#### Chirag Sir (Coach)
-Helped with xyz
-
-### 2.2 Member Roles & Contributions
-* **Pratham Periwal:** xyz
-* **Inaaya Sood:** xyz
-* **Swasti Kedia:** xyz
+### 2.2 Team Identity & Story
 
 ---
 
