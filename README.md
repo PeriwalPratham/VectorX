@@ -223,6 +223,23 @@ For our motor driver we tested 2 mainly the L298p and the TB6612FNG, we ended up
 
 
 ### 5.5 Speed & Torque Calculations
+The wheel's linear speed is given by:
+
+```math
+v = \frac{\pi \times D \times N}{60}
+```
+
+**Solved with our values:**
+
+```math
+v = \frac{\pi \times 0.056 \times 300}{60} \approx 0.88 \text{ m/s} \approx 3.17 \text{ km/h}
+```
+
+| Variable | Value | Description |
+|----------|-------|-------------|
+| D | 0.056 m (56 mm) | Wheel diameter |
+| N | 300 RPM | Motor speed |
+| v | ≈ 0.88 m/s | Calculated linear speed |
 ### 5.6 Mechanical Design Decisions
 ### 5.7 Mechanical Iterations
 
