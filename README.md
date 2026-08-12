@@ -309,10 +309,29 @@ v = \frac{\pi \times 0.056 \times 300}{60} \approx 0.88 \text{ m/s} \approx 3.17
 
 ### 11.1 Hardware Requirements
 ### 11.2 Bill of Materials (BOM)
-| Component | Description / Spec | Qty | Unit Cost (₹) | Total Cost (₹) | Source / Vendor |
-| :--- | :--- | :---: | :---: | :---: | :--- |
-| | | | | | |
-| **Total Build Cost** | | | | **₹0.00** | |
+## Bill of Materials (BOM)
+
+| Component | Description / Spec | Qty | Unit Cost (₹) | Total Cost (₹) |
+|-----------|--------------------|----:|---------------:|----------------:|
+| Raspberry Pi 5 | 8GB LPDDR4X RAM | 1 | ₹24,000 | ₹24,000 |
+| Raspberry Pi Charger | Charging Cable for Pi 5 | 1 | ₹1,400 | ₹1,400 |
+| Raspberry Pi Camera 3 Wide Module | 12MP, 120° wide-angle lens | 1 | ₹4,500 | ₹4,500 |
+| Arduino Uno | ATmega328P board | 1 | ₹450 | ₹450 |
+| Arduino Uno Cable | USB-A to USB-B cable for programming the Uno | 1 | ₹50 | ₹50 |
+| FNG TB6612 Motor Driver | DFRobot, PWM speed control | 1 | ₹350 | ₹350 |
+| VL530X ToF Module | Time-of-flight laser distance sensor, I2C, 1m range | 3 | ₹490 | ₹1,470 |
+| 5V 5A Buck Converter | DC-DC step-down module | 1 | ₹250 | ₹250 |
+| 12V N20 300rpm motor with Encoder | Metal-gear DC motor with integrated quadrature encoder | 1 | ₹450 | ₹450 |
+| MPU6050 | 6-axis IMU, I2C interface | 1 | ₹150 | ₹150 |
+| Lego Differential Gear | Differential gear assembly for rear-axle power split | 1 | – | ₹0 |
+| REV Robotics Smart Robot Servo | High-torque smart servo | 1 | ₹5,000 | ₹5,000 |
+| Power Distribution Board | Board for splitting battery power to multiple modules | 1 | ₹250 | ₹250 |
+| Breadboard | For splitting pins into multiple points | 1 | ₹100 | ₹100 |
+| Chasis Iterations | Estimated material/machining cost per prototype iteration (3D print) | 5 | ₹1,500 | ₹7,500 |
+| Final Chasis | Final laser-cut/3D-printed chassis plate with mounts for Pi, Arduino, motors and sensors | 1 | ₹1,500 | ₹1,500 |
+| Wheels | Rubber-tyred robot wheels, 56mm diameter | 4 | ₹120 | ₹480 |
+| Miscellenaous Cost | Includes testing components, alternatives, wires, etc | 1 | ₹10,000 | ₹10,000 |
+| **Total Build Cost** | | | | **₹57,900** |
 
 ### 11.3 CAD & Manufacturing Files
 ### 11.4 Wiring Instructions
