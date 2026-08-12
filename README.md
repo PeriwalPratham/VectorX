@@ -122,7 +122,7 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
 <table>
   <tr>
     <td width="200" align="center">
-      <img width="180" height="300" alt="PHOTO-2026-08-12-10-03-59" src="https://github.com/user-attachments/assets/9f91404c-b2d6-4d42-bdbe-d5514d0d7505" />
+      <img width="180" height="240" alt="PHOTO-2026-08-12-10-03-59" src="https://github.com/user-attachments/assets/9f91404c-b2d6-4d42-bdbe-d5514d0d7505" />
     </td>
     <td>
       Hi, I'm Pratham! I am a 14-year-old from Podar International School.I love physics and programming which led me into robotics I love building and making projects and learning about new things
