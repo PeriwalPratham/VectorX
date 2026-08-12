@@ -1,0 +1,298 @@
+```python
+import cv2
+import numpy as np
+
+
+def dummy(x):
+    pass
+
+
+colour_presets = {
+    0: {
+        "name": "Red",
+        "hsv": [0, 120, 70, 10, 255, 255]
+    },
+
+    1: {
+        "name": "Green",
+        "hsv": [36, 100, 100, 86, 255, 255]
+    },
+
+    2: {
+        "name": "Pink",
+        "hsv": [140, 100, 100, 170, 255, 255]
+    },
+
+    3: {
+        "name": "Orange",
+        "hsv": [11, 100, 100, 25, 255, 255]
+    },
+
+    4: {
+        "name": "Blue",
+        "hsv": [94, 80, 80, 126, 255, 255]
+    }
+}
+
+
+cv2.namedWindow(
+    "HSV Tuner",
+    cv2.WINDOW_NORMAL
+)
+
+cv2.resizeWindow(
+    "HSV Tuner",
+    450,
+    350
+)
+
+
+cv2.createTrackbar(
+    "Select Color",
+    "HSV Tuner",
+    0,
+    4,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Lower H",
+    "HSV Tuner",
+    0,
+    170,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Lower S",
+    "HSV Tuner",
+    0,
+    255,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Lower V",
+    "HSV Tuner",
+    0,
+    255,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Upper H",
+    "HSV Tuner",
+    179,
+    179,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Upper S",
+    "HSV Tuner",
+    255,
+    255,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Upper V",
+    "HSV Tuner",
+    255,
+    255,
+    dummy
+)
+
+
+cap = cv2.VideoCapture(0)
+
+last_selected_color = -1
+
+
+while True:
+
+    ret, frame = cap.read()
+
+    if not ret:
+
+        print("Failed to capture video.")
+
+        break
+
+
+    current_color_idx = cv2.getTrackbarPos(
+        "Select Color",
+        "HSV Tuner"
+    )
+
+
+    # Load preset whenever a new colour is selected
+    if current_color_idx != last_selected_color:
+
+        hsv_vals = colour_presets[
+            current_color_idx
+        ]["hsv"]
+
+        cv2.setTrackbarPos(
+            "Lower H",
+            "HSV Tuner",
+            hsv_vals[0]
+        )
+
+        cv2.setTrackbarPos(
+            "Lower S",
+            "HSV Tuner",
+            hsv_vals[1]
+        )
+
+        cv2.setTrackbarPos(
+            "Lower V",
+            "HSV Tuner",
+            hsv_vals[2]
+        )
+
+        cv2.setTrackbarPos(
+            "Upper H",
+            "HSV Tuner",
+            hsv_vals[3]
+        )
+
+        cv2.setTrackbarPos(
+            "Upper S",
+            "HSV Tuner",
+            hsv_vals[4]
+        )
+
+        cv2.setTrackbarPos(
+            "Upper V",
+            "HSV Tuner",
+            hsv_vals[5]
+        )
+
+        last_selected_color = current_color_idx
+
+
+    # Read current slider values
+
+    lh = cv2.getTrackbarPos(
+        "Lower H",
+        "HSV Tuner"
+    )
+
+    ls = cv2.getTrackbarPos(
+        "Lower S",
+        "HSV Tuner"
+    )
+
+    lv = cv2.getTrackbarPos(
+        "Lower V",
+        "HSV Tuner"
+    )
+
+    uh = cv2.getTrackbarPos(
+        "Upper H",
+        "HSV Tuner"
+    )
+
+    us = cv2.getTrackbarPos(
+        "Upper S",
+        "HSV Tuner"
+    )
+
+    uv = cv2.getTrackbarPos(
+        "Upper V",
+        "HSV Tuner"
+    )
+
+
+    # Update selected colour's preset
+    colour_presets[
+        current_color_idx
+    ]["hsv"] = [
+        lh,
+        ls,
+        lv,
+        uh,
+        us,
+        uv
+    ]
+
+
+    # Convert image to HSV
+
+    hsv_frame = cv2.cvtColor(
+        frame,
+        cv2.COLOR_BGR2HSV
+    )
+
+
+    # Create colour mask
+
+    lower_bound = np.array(
+        [lh, ls, lv]
+    )
+
+    upper_bound = np.array(
+        [uh, us, uv]
+    )
+
+    mask = cv2.inRange(
+        hsv_frame,
+        lower_bound,
+        upper_bound
+    )
+
+
+    # Apply mask to original image
+
+    masked_result = cv2.bitwise_and(
+        frame,
+        frame,
+        mask=mask
+    )
+
+
+    color_name = colour_presets[
+        current_color_idx
+    ]["name"]
+
+
+    cv2.putText(
+        frame,
+        f"Active Color: {color_name}",
+        (10, 30),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (0, 255, 0),
+        2
+    )
+
+
+    cv2.imshow(
+        "Webcam Feed",
+        frame
+    )
+
+    cv2.imshow(
+        f"Mask ({color_name})",
+        mask
+    )
+
+    cv2.imshow(
+        "Filtered Result",
+        masked_result
+    )
+
+
+    if (
+        cv2.waitKey(1) & 0xFF
+        == ord('q')
+    ):
+
+        break
+
+
+cap.release()
+
+cv2.destroyAllWindows()
+```
