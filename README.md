@@ -666,7 +666,7 @@ Once the Pi decides which way and how hard to dodge, it sends a single short com
 | `L10` | 95° | Small dodge left (green pillar, ~10° offset) |
 | `L17` | 102° | Medium dodge left (green pillar, ~17° offset) |
 | `L20` | 105° | Large dodge left (green pillar, ~20° offset) |
-| `S` | — (motor + servo held at STRAIGHT) | Stop |
+| `S` | (motor + servo held at STRAIGHT) | Stop |
 
 **How it works:**
 - The Arduino continuously drives forward (`moveForward()`, fixed PWM `DRIVE_SPEED = 180`) as long as it has received any command other than `S`.
@@ -680,7 +680,7 @@ Once the Pi decides which way and how hard to dodge, it sends a single short com
 After the final lap is complete, the robot switches from lap-driving mode into a dedicated parking sequence, split across [`parking_detection.py`](Test%20Code/parking_detection.py) (Pi) and [`parking_maneuver.ino`](Test%20Code/parking_maneuver.ino) (Arduino), using the same camera + ToF + gyro hardware already documented in Sections 6 and 7.
 
 **1. Parking zone detection**
-`parking_detection.py` scans for the magenta parking plates using the HSV masking approach already validated in [`pink_parking_test.py`](Component_test_code/pink_parking_test.py). As the robot approaches, the growing bounding-box area is used as a distance proxy. Once the area crosses a threshold, the zone's horizontal position in-frame determines which side it's on, and the Pi sends a single `PARK_L` or `PARK_R` trigger to the Arduino — control then passes entirely to the Arduino's state machine.
+`parking_detection.py` scans for the magenta parking plates using the HSV masking approach already validated in [`pink_parking_test.py`](Component_test_code/pink_plate_parking.py). As the robot approaches, the growing bounding-box area is used as a distance proxy. Once the area crosses a threshold, the zone's horizontal position in-frame determines which side it's on, and the Pi sends a single `PARK_L` or `PARK_R` trigger to the Arduino — control then passes entirely to the Arduino's state machine.
 
 **2. Reverse parallel-park state machine**
 `parking_maneuver.ino` implements the maneuver as four states:
