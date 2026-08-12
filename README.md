@@ -891,10 +891,13 @@ Chassis-level subsystem testing (fit, clearance, mechanical stability across ite
 
 ### 10.4 Problems & Solutions
 
-| Problem | Root Cause | Fix | Date |
-|:---|:---|:---|:---|
-| | | | |
-| | | | |
+| Problem | Root Cause | Fix |
+|:---|:---|:---|
+| Steering servo jittering and eventually burning out | We were feeding the servo excess voltage, beyond its rated input, which caused erratic jitter and eventually damaged the internals | Switched to the REV Robotics Smart Servo, which handled our voltage range reliably and had far less jitter under load |
+| Rear axle shaft snapped completely | The original shaft wasn't strong enough to handle the torque and repeated stress from turning and driving | Designed and 3D printed a new, more robust shaft to replace it |
+| No way to detect track direction (clockwise vs counter-clockwise) | We had no sensor capable of reading the orange/blue direction markers on the track | Added the Pi Camera and built a colour detection system to read marker position and determine track direction at the start of each run |
+| ToF sensors returning inaccurate distance readings mid-turn | When the car turned sharply, the ToF sensor tilted further away from the wall, causing it to read a longer distance than the real one, making the car think it had more room than it actually did, which caused it to curve inward and crash | First corrected the reading using a cosine adjustment based on the tilt angle, then permanently fixed it by using MPU heading data to adjust our distance thresholds and ranges dynamically during turns |
+| Camera obstacle colours were being misread | OpenCV loads images in BGR format by default, but our detection logic was written assuming RGB, causing our red/green thresholds to target the wrong colours | Identified the BGR vs RGB mismatch and corrected our colour channel handling in the detection code |
 
 ---
 
