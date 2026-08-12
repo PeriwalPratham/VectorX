@@ -513,15 +513,69 @@ Between the Arduino and our actuators, we send PWM signals to the TB6612FNG moto
 
 ## 8. Autonomous Navigation & Obstacle Strategy
 
+## 8. Autonomous Navigation & Obstacle Strategy
+
 ### 8.1 Navigation Overview
+
+We navigate using our Sense → Decide → Act loop. The Raspberry Pi handles all vision based decisions (track direction, obstacle colour, parking marker detection), while the Arduino handles real time physical control (steering angle, motor speed, wall standoff distance) using its own ToF and gyro readings. We treat these as two separate layers, the Pi tells the car what to do at a high level, and the Arduino figures out how to physically execute it safely.
+
 ### 8.2 Direction & Sign Detection
+
+At the start of each run, we detect the orange and blue track markers to figure out which direction we're driving. We compare the vertical position of each marker's bounding box in the camera frame, whichever one sits lower (closer to the camera) tells us the inner side of the track:
+
+- Orange closer → inner track is RIGHT
+- Blue closer → inner track is LEFT
+
+Once we lock in a direction, we send a single byte (`]` for right, `[` for left) to the Arduino and don't re-check it for the rest of the run, since the track direction doesn't change mid race.
+
 ### 8.3 Lane / Wall Following
+
+We handle lane and wall following in two ways depending on what's available:
+
+- **Camera side:** we built a black line detector that converts each frame to HSV, masks out dark pixels, and splits the frame into left, centre, and right sections to count black pixels in each. This tells us roughly where the track line sits in our field of view.
+- **Arduino side:** we use the ToF sensors to hold a consistent standoff distance from the wall using a PD control loop, adjusting steering angle proportionally to how far off we are from our target distance, with a derivative term to dampen oscillation.
+
 ### 8.4 Obstacle Detection
+
+We detect red and green obstacles using HSV colour masking, similar to our track marker detection. Since red wraps around the HSV hue circle, we combine two separate red ranges (`0-10` and `170-180`) into one mask.
+
+Once we find a valid contour (area above `500` pixels), we estimate its distance using the pinhole camera formula:
+
+```text
+Distance = (Real Object Width × Focal Length) / Object Width in Pixels
+```
+
+We calibrated our focal length separately for red and green objects to keep the estimate accurate.
+
 ### 8.5 Obstacle Management Strategy
+
+Each frame, we track whichever obstacle is currently closest rather than reacting to every obstacle we see:
+
+| Colour | Dodge Direction | Command |
+|:---|:---|:---|
+| Red | Right | `R` |
+| Green | Left | `L` |
+
+We only trigger a dodge once the closest obstacle's estimated distance drops below our `DODGE_THRESHOLD_CM` value, and we enforce a 2 second cooldown between dodge commands so we don't spam the Arduino with repeated instructions while we're already mid maneuver.
+
 ### 8.6 Parallel Parking Strategy
+
+[We'll fill this in with our actual parking approach, e.g. how we detect the magenta parking plates, what distance/angle triggers the parking maneuver, and whether we reverse in or pull in forward.]
+
 ### 8.7 Control Algorithm
+
+On the Arduino, we use PD (proportional-derivative) control for wall following. We calculate an error term as the difference between our current ToF reading and our target standoff distance, then combine a proportional correction with a derivative term based on how fast that error is changing, and use the result to adjust our servo's steering angle within its mechanical range.
+
+For cornering, we use gyro-based heading tracking rather than relying purely on distance thresholds, since this lets us confirm we've actually completed a turn (roughly matching our expected turn angle) before switching back to wall following.
+
 ### 8.8 Edge Cases & Safeguards
-### 8.9 OpenCV codes-
+
+- **ToF timeout/out of range:** if a ToF sensor times out or returns an unrealistic reading, we treat it as invalid rather than acting on bad data.
+- **Obstacle cooldown:** our 2 second cooldown between dodge commands stops the Arduino from receiving conflicting instructions mid maneuver.
+- **Lighting sensitivity:** our HSV thresholds were tuned interactively using our HSV tuner rather than guessed, to reduce false positives/negatives under competition lighting.
+- **Distance threshold gating:** we only react to obstacles within `DODGE_THRESHOLD_CM`, ignoring anything further away so we don't dodge prematurely.
+
+*(See Section 8.9 below for the full computer vision code and stage by stage breakdown.)*
 # Computer Vision Development
 
 Our computer vision system was developed in multiple stages.
