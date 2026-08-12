@@ -540,17 +540,6 @@ VectorX splits its software across two controllers, matching the dual-brain hard
 This is a **handoff architecture** rather than a continuous shared-control loop: the Pi's only job during a run is a one-time direction read at the start line, after which the Arduino runs autonomously using its own sensors until it detects the run is complete.
 
 ### 7.2 Software Structure
-
-```text
-Test Code/
-├── vectorx_open_challenge.ino     # Open Challenge: IMU, ToF, servo, motor
-├── vision_avoidance.py            # Open Challenge: direction detection + serial handshake
-├── obstacle_avoidance.ino         # Obstacle Challenge: pillar-dodge steering
-├── pillar_avoidance.py            # Obstacle Challenge: pillar detection + dodge decisions
-├── parking_maneuver.ino           # Obstacle Challenge: parking state machine
-└── parking_detection.py           # Obstacle Challenge: parking zone detection + trigger
-```
-
 Files are currently written as single monolithic files (one `.ino`/`.py` per role) rather than split into shared modules — this keeps debugging simple during development, but see Section 9.2 for the reasoning and the trade-off this creates for readability as more logic gets added.
 
 ### 7.3 Code Modules
