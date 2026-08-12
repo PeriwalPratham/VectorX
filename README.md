@@ -219,12 +219,12 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 #### Primary Views
 | Front View | Back View | Top View | Bottom View |
 | :---: | :---: | :---: | :---: |
-| ![Front](Robot Pics/Front View.png) | ![Back](Robot Pics/Back View.png) | ![Top](Robot Pics/Top View.png) | ![Bottom](Robot Pics/Bottom View.png) |
+| ![Front](Robot%20Pics/Front%20View.png) | ![Back](Robot%20Pics/Back%20View.png) | ![Top](Robot%20Pics/Top%20View.png) | ![Bottom](Robot%20Pics/Bottom%20View.png) |
 
 #### Side Views
 | Left Side | Right Side |
 | :---: | :---: |
-| ![Left](Robot Pics/Left Side.png) | ![Right](Robot Pics/Right Side.png) |
+| ![Left](Robot%20Pics/Left%20Side.png) | ![Right](Robot%20Pics/Right%20Side.png) |
 
 ### 3.4 Demonstration Videos
 Link for the video - https://www.youtube.com/watch?v=WkW-i0pZRSE
