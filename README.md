@@ -417,13 +417,97 @@ We chose this voltage because it comfortably powers the N20 motor directly and f
 
 ## 7. Software Architecture
 
+## 7. Software Architecture
+
 ### 7.1 Software Overview
+
+Our software follows a Sense → Decide → Act pipeline. The Raspberry Pi 5 runs our full computer vision pipeline, converting camera frames into a small set of single-character decisions. The Arduino Uno receives those decisions over serial, combines them with its own real-time sensor readings from the ToF sensors and gyro, and drives the servo and motor accordingly.
+
+We built the Pi-side vision system in nine incremental stages, starting with HSV colour tuning and working up through colour detection, track direction, line detection, distance estimation, obstacle detection, avoidance logic, and finally serial integration. We tested each stage standalone before merging it into the final script.
+
 ### 7.2 Software Structure
+
+We kept both codebases single-file, prioritizing reliability and ease of debugging:
+
+- **Raspberry Pi 5 (Python):** one script that runs a continuous camera loop, applies HSV masking for each tracked colour, decides on a track direction or obstacle dodge, and writes single-byte commands to the Arduino over serial.
+- **Arduino Uno (C++):** one sketch that reads incoming serial commands from the Pi, polls the ToF sensors and MPU6050, and drives the motor and servo through PID-based control loops.
+
 ### 7.3 Code Modules
+
+We organized our Pi-side script functionally around these responsibilities, even though it lives in a single file:
+
+| Module | Responsibility |
+|:---|:---|
+| HSV masking | Converts each frame to HSV and generates binary masks for orange, blue, red, and green |
+| Track direction detection | Compares orange vs blue marker position to decide if the track's inner side is left or right |
+| Obstacle detection | Finds red/green contours above an area threshold and estimates distance using the pinhole camera formula |
+| Dodge decision | Picks the closest qualifying obstacle and selects a dodge direction (`R` for red, `L` for green) |
+| Serial output | Sends single-byte commands to the Arduino, gated by a distance threshold and cooldown timer |
+
 ### 7.4 Control Flow & State Machine
+
+Our Pi-side script runs a simple two-phase state machine, controlled by a single flag, `track_direction_set`:
+
+```text
+        ┌────────────────────────┐
+        │   Phase 1: Direction   │
+        │  Detect orange & blue  │
+        │  → decide L or R track │
+        └───────────┬─────────────┘
+                     │ direction found
+                     ▼
+        ┌────────────────────────┐
+        │  Phase 2: Obstacle     │
+        │  Detect red/green      │
+        │  → estimate distance   │
+        │  → dodge if close      │
+        │  → cooldown 2s         │
+        └────────────────────────┘
+```
+
+Once `track_direction_set` becomes `True`, we permanently switch from direction detection into the obstacle-dodging loop for the rest of the run.
+
+[We'll add our Arduino-side state machine here once we finalize the current `.ino` file, our old prototype sketch used a different driver and sensor count so it's not accurate anymore.]
+
 ### 7.5 Control Architecture
+
+On the Pi side, our obstacle avoidance is decision-based rather than a continuous feedback loop. Each frame independently evaluates the closest obstacle's estimated distance and triggers a dodge command only if it crosses `DODGE_THRESHOLD_CM`, with a cooldown to prevent repeated commands mid-maneuver.
+
+On the Arduino side, we run PID control loops for motor speed and steering correction, using sensor fusion between the MPU6050 gyro and ToF distance readings to hold heading and maintain wall standoff distance. [We'll fill in our exact gains and loop structure once the current Arduino code is finalized.]
+
 ### 7.6 Communication Protocols
+
+We connect the Pi and Arduino over USB serial at **115200 baud**, using single-byte ASCII commands rather than structured messages like JSON, keeping parsing on the Arduino side simple:
+
+| Byte | Meaning |
+|:---|:---|
+| `]` | Track direction is RIGHT (orange closer) |
+| `[` | Track direction is LEFT (blue closer) |
+| `R` | Dodge right (red obstacle detected) |
+| `L` | Dodge left (green obstacle detected) |
+
+Between the Arduino and our sensors, we run a shared I2C bus (SDA/SCL) across all three ToF sensors and the MPU6050, using XSHUT pins at startup to assign each ToF a unique I2C address.
+
+Between the Arduino and our actuators, we send PWM signals to the TB6612FNG motor driver (speed + direction) and the REV Smart Servo (steering angle).
+
 ### 7.7 Dependencies & Software Stack
+
+**Raspberry Pi 5 (Python):**
+
+| Library | Purpose |
+|:---|:---|
+| `OpenCV` (cv2) | Camera capture, HSV conversion, contour detection |
+| `NumPy` | HSV array definitions, numerical operations |
+| `PySerial` | Serial communication with the Arduino |
+| `time` | Cooldown timing between dodge commands |
+
+**Arduino Uno (C++):**
+
+| Library | Purpose |
+|:---|:---|
+| `Wire.h` | I2C communication with ToF sensors and MPU6050 |
+| `Servo.h` | Steering servo control |
+| VL53L0X library | ToF sensor initialization and distance reads |
 
 ---
 
