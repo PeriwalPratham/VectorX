@@ -216,25 +216,24 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 | Servo regulation | PDB 5V regulated header → steering servo |
 
 ### 3.3 Multi-View Photographs
-#### Multi-View Photographs
-
 **Front View**
-<img src="Robot Pics/Front View.png" width="400">
+![Front View](https://github.com/user-attachments/assets/32821528-7d7f-487c-a146-7c006126cd19)
 
 **Back View**
-<img src="Robot Pics/Back View.png" width="400">
+![Back View](https://github.com/user-attachments/assets/35be19b9-088e-4b59-8e0e-d6e7ea85bc33)
 
 **Top View**
-<img src="Robot Pics/Top View.png" width="400">
+![Top View](https://github.com/user-attachments/assets/f0fcfd25-7115-4d0e-a166-f83c6ea12e7d)
 
 **Bottom View**
-<img src="Robot Pics/Bottom View.png" width="400">
+![Bottom View](https://github.com/user-attachments/assets/f596df5e-95e3-4f8e-add7-799785aa68d6)
 
 **Left Side**
-<img src="Robot Pics/Left Side.png" width="400">
+![Left Side](https://github.com/user-attachments/assets/76b0b038-4864-4fa7-91a7-d7a382fcd07f)
 
 **Right Side**
-<img src="Robot Pics/Right Side.png" width="400">
+![Right Side](https://github.com/user-attachments/assets/01642d56-6d83-4cb9-9f7a-bb4bba89f512)
+
 ### 3.4 Demonstration Videos
 Link for the video - https://www.youtube.com/watch?v=WkW-i0pZRSE
 
