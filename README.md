@@ -645,10 +645,10 @@ Wall-following is handled entirely on the Arduino using the left/right ToF pair 
 
 ### 8.4 Obstacle Detection
 
-Pillar detection runs on the Raspberry Pi in [`pillar_avoidance.py`](Test%20Code/pillar_avoidance.py), building on the HSV masking approach already validated in [`09_red_green_test.py`](Component_test_code/09_red_green_test.py):
+Pillar detection runs on the Raspberry Pi in [`pillar_avoidance.py`](Component_test_code/pillar_avoidance.py), building on the HSV masking approach already validated in [`red_green_test.py`](Component_test_code/red_green_test.py):
 
 1. Each frame is masked for red (two hue ranges, since red wraps around the HSV hue circle) and green separately, and the largest qualifying contour in each mask is found.
-2. If both colors are detected in the same frame, the larger contour (i.e. the closer/more urgent pillar) is treated as the target — the algorithm only reacts to one pillar at a time.
+2. If both colors are detected in the same frame, the larger contour (i.e., the closer/more urgent pillar) is treated as the target — the algorithm only reacts to one pillar at a time.
 3. The target's bounding box gives its area (used as a distance proxy — a larger box means a closer pillar) and its vertical position, which is used to detect when the pillar has passed underneath/behind the robot.
 4. The bounding-box area is mapped to one of three dodge tiers (10°/17°/20°), and the pillar's color determines the direction (red → dodge right, green → dodge left). This decision feeds directly into the command table in Section 8.5.
 5. Once the pillar is no longer detected for several consecutive frames, or its bounding box has moved past the "cleared" line near the bottom of the frame, the robot returns to driving straight (`G`).
