@@ -14,9 +14,6 @@
 </div>
 
 ---
-
-Link for the video : https://youtu.be/WkW-i0pZRSE?si=gT4hQuf2EA_r-YDU
-
 ## So, what can you find here?
 
 1. [The Project](#1-the-project)
@@ -187,8 +184,7 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 ### 3.2 Key Specifications & Hardware Summary
 ### 3.3 Multi-View Photographs
 ### 3.4 Demonstration Videos
-* **Open Challenge Demonstration Video:** [YouTube Link]
-* **Obstacle Challenge Demonstration Video:** [YouTube Link]
+Link for the video - https://youtu.be/WkW-i0pZRSE?si=gT4hQuf2EA_r-YDU
 
 ---
 
