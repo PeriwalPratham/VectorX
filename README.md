@@ -122,7 +122,7 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
 <table>
   <tr>
     <td width="200" align="center">
-      <img src="photos/pratham.jpg" width="180" alt="Pratham Periwal" />
+      <img width="180" height="300" alt="PHOTO-2026-08-12-10-03-59" src="https://github.com/user-attachments/assets/9f91404c-b2d6-4d42-bdbe-d5514d0d7505" />
     </td>
     <td>
       Hi, I'm Pratham! I am a 14-year-old from Podar International School.I love physics and programming which led me into robotics I love building and making projects and learning about new things
@@ -249,29 +249,75 @@ This keeps a clear division of responsibility: the Pi give the data, and the Ard
 
 ## 5. Mechanical & Mobility System
 
+## 5. Mechanical & Mobility System
+
 ### 5.1 Chassis & Kinematics
+
+Our chassis uses a **car-like (Ackermann) kinematic model** rather than a differential-drive or holonomic setup. Since only the front wheels steer and the rear wheels drive, the robot is **non-holonomic** — it can only move along smooth curved paths and cannot rotate in place or strafe sideways.
+
+During a turn, all four wheels rotate around a common **Instantaneous Center of Rotation (ICR)**. Because the inner and outer wheels trace circles of different radii, they must be angled differently to roll smoothly without scrubbing the tires against the ground.
+
+**Key Kinematic Formulas**
+
+| # | Formula | Description |
+|:---|:---|:---|
+| 1 | $R = \dfrac{L}{\tan(\delta)}$ | Bicycle model — turning radius from wheelbase and steering angle |
+| 2 | $\tan(\delta_{inner}) = \dfrac{L}{R - \frac{W}{2}}$ | Inner wheel steering angle |
+| 3 | $\tan(\delta_{outer}) = \dfrac{L}{R + \frac{W}{2}}$ | Outer wheel steering angle |
+| 4 | $\cot(\delta_{outer}) - \cot(\delta_{inner}) = \dfrac{W}{L}$ | Ackermann condition — ensures no wheel scrubbing |
+| 5 | $R_{min} = \dfrac{L}{\tan(\delta_{max})}$ | Minimum turning radius from max servo steering angle |
+
+| Symbol | Meaning |
+|:---|:---|
+| L | Wheelbase (front-rear axle distance) |
+| W | Track width (left-right wheel distance) |
+| R | Turning radius (to rear axle center) |
+| δ | Steering angle |
+
+---
+
 ### 5.2 Drive System & Differential
+
+Our rear axle uses a **mechanical differential** driven by a single N20 DC motor, allowing the left and right rear wheels to rotate at different speeds during turns.
+
+**Why a differential instead of a rigid axle or dual independent motors:**
+
+- **Eliminates wheel scrubbing** — during a turn, the outer rear wheel travels a longer arc than the inner wheel. A rigid axle forces both wheels to spin at the same speed, causing skidding; the differential lets them naturally rotate at different rates.
+- **Reduces wear** — less scrubbing means less tire wear, less friction heat, and longer component life.
+- **Better traction and stability** — both wheels stay in proper rolling contact instead of dragging.
+- **Simpler than dual-motor control** — a single motor drives both wheels mechanically, unlike an independent dual-motor setup which would need encoder feedback and software to actively match wheel speeds.
+- **Consistent with our Ackermann steering** — since the front steering already follows true Ackermann geometry, the rear differential keeps the whole drivetrain physically consistent with real car-like turning behavior.
+
+> **Trade-off:** as a standard open differential, more torque is sent to whichever wheel has less resistance — meaning if one rear wheel loses traction, it can spin freely while the other gets underpowered.
+
+---
+
 ### 5.3 Steering System
 
-<img width="474" height="474" alt="OIP-3474533807" src="https://github.com/user-attachments/assets/ea54b908-6f74-498b-b326-aa50131c07f4" />
-Our steering system depends on a servo motor.We tried a couple of different Servo motors including the mg90s and it's plastic version the Sg90.However These did not fit our build and had many problems including calibration drift and jittering.
-Hence we settled on the **Rev robotics smart servo**
-This had many advantages including that of having a higher torque,having all metal gears which made them resistant to damage.While we tested they also had less jitter allowing us to control it better.
+<img width="474" height="474" alt="Steering system" src="https://github.com/user-attachments/assets/ea54b908-6f74-498b-b326-aa50131c07f4" />
 
+Our steering system depends on a servo motor. We tried a couple of different servo motors including the MG90S and its plastic version the SG90. However, these did not fit our build and had many problems including calibration drift and jittering.
 
+Hence we settled on the **REV Robotics Smart Servo**. This had many advantages including a higher torque and all-metal gears, which made it resistant to damage. While testing, it also had less jitter, allowing us to control it more precisely.
+
+---
 
 ### 5.4 Motors, Drivers & Selection Rationale
-<img width="474" height="474" alt="OIP-1389537309" src="https://github.com/user-attachments/assets/1a5511b5-4d45-442c-b605-7e1487fcc4c8" />
 
-For our motor we tried and tested many intonations of the n20 motor with different rpm. These were fast,produces enough torque and were cheap to test out. Moreover we could add a encoder to this which we tested later on.
+<img width="474" height="474" alt="N20 motor" src="https://github.com/user-attachments/assets/1a5511b5-4d45-442c-b605-7e1487fcc4c8" />
 
-<img width="474" height="474" alt="OIP-2779162229" src="https://github.com/user-attachments/assets/95f74a67-df66-483d-a2ee-9175d4e9228c" />
+For our motor, we tried and tested many variations of the N20 motor at different RPMs. These were fast, produced enough torque, and were cheap to test out. Moreover, we could add an encoder to it, which we tested later on.
 
-For our motor driver we tested 2 mainly the L298p and the TB6612FNG, we ended up using the TB6612FNG as L298p had many problems including voltage fluctuations not allowing our motors to get full voltage and would create noise disrupting the working of other components.It also contains extra parts which had no purpose for example a buzzer which increasing the mass of our robot.The TB6612FNG had other advantages including its small dimensions newer technology and reduced voltage fluctuations 
+<img width="474" height="474" alt="Motor driver" src="https://github.com/user-attachments/assets/95f74a67-df66-483d-a2ee-9175d4e9228c" />
 
+For our motor driver, we tested two options mainly: the L298P and the TB6612FNG. We ended up using the TB6612FNG, as the L298P had many problems including voltage fluctuations that prevented our motors from getting full voltage, and created noise that disrupted the working of other components. It also contains extra parts with no purpose for our build, such as a buzzer, which increased the mass of our robot.
 
+The TB6612FNG had other advantages including its small dimensions, newer technology, and reduced voltage fluctuations.
+
+---
 
 ### 5.5 Speed & Torque Calculations
+
 The wheel's linear speed is given by:
 
 ```math
@@ -285,13 +331,36 @@ v = \frac{\pi \times 0.056 \times 300}{60} \approx 0.88 \text{ m/s} \approx 3.17
 ```
 
 | Variable | Value | Description |
-|----------|-------|-------------|
+|:---|:---|:---|
 | D | 0.056 m (56 mm) | Wheel diameter |
 | N | 300 RPM | Motor speed |
 | v | ≈ 0.88 m/s | Calculated linear speed |
+
+---
+
 ### 5.6 Mechanical Design Decisions
+
+Our chassis is **3D-printed**, chosen over laser-cut alternatives for its ability to create complex, integrated mounting geometry (motor mounts, sensor brackets, servo housings) in a single print rather than assembling multiple flat plates. This also allowed us to iterate quickly — reprinting and testing new versions within a day instead of waiting on external laser-cutting services.
+
+Key design priorities for the chassis:
+- **Compact footprint** to stay within the WRO 300mm × 200mm size limit
+- **Rigid mounting points** for the Raspberry Pi 5, Arduino Uno, motor driver, and sensors to minimize vibration-induced camera blur and sensor noise
+- **Low center of gravity**, keeping heavier components (battery, Pi) mounted low to improve stability during sharp turns
+- **Easy access** to wiring and components for debugging without disassembling the whole chassis
+
+---
+
 ### 5.7 Mechanical Iterations
 
+We went through **2–3 major chassis iterations** before arriving at our final design.
+
+| Iteration | Key Changes | Reason |
+|:---|:---|:---|
+| v1 | Initial base layout with mounts for Pi, Arduino, and motor | Establish basic component fit and wiring layout |
+| v2 | Added a dedicated 3D-printed stand for the Raspberry Pi, along with custom-printed mounts for the ToF sensors and camera module | Replaced temporary fixes like double-sided tape with proper mechanical mounts, improving reliability and reducing the chance of components shifting during movement |
+| v3 (Final) | Added an encoder to the drive motor and switched from the L298P to the TB6612FNG motor driver | The encoder enabled precise speed feedback for closed-loop motor control, while the TB6612FNG resolved voltage fluctuation and noise issues from the L298P (see Section 5.4) |
+
+Each iteration was tested for fit, component clearance, and mechanical stability before moving to the next version, helping us catch design flaws early rather than during final assembly.
 ---
 
 ## 6. Power & Sensor Architecture
