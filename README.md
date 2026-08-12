@@ -35,7 +35,7 @@
 **VectorX** is our self-driving car built for the **World Robot Olympiad (WRO) Future Engineers (FE) 2026** competition. Our goal was to build a fast, reliable car that can navigate an obstacle-filled track autonomously. We 3D-printed our custom chassis & run everything on it using a "dual brain" method. It combines a **Raspberry Pi 5** for image processing & obstacle detection and an **Arduino Uno** for motor & sensor control.
 
 #### Key Performance Specs
-* **Dimensions -** Length: 225 mm, Width:145 mm, Height:195 mm (Fits WRO 300mm x 200mm limit)
+* **Dimensions -** Length: 225 mm, Width:145 mm, Height:190 mm (Fits WRO 300mm x 200mm limit)
 * **Steering -** Front Ackermann Steering (REV Smart Servo)
 * **Drive System -** Rear Mechanical Differential driven by DC Motor
 * **Dual-Brain Compute -** Raspberry Pi 5 + Arduino Uno
@@ -216,23 +216,15 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 | Servo regulation | PDB 5V regulated header → steering servo |
 
 ### 3.3 Multi-View Photographs
-**Front View**
-<img src="Robot Pics/Front View.HIEC.png" width="400" alt="Front View"/>
+#### Primary Views
+| Front View | Back View | Top View | Bottom View |
+| :---: | :---: | :---: | :---: |
+| ![Front View](https://github.com/user-attachments/assets/052c0aa3-95c5-432e-9e41-60264cf95d36)| ![Back View](https://github.com/user-attachments/assets/3a425c7e-1edc-418f-903f-168d6803ff29)| ![Top View](https://github.com/user-attachments/assets/86e6bba4-1e96-4976-a34d-3238b6641e1c)| ![Bottom View](https://github.com/user-attachments/assets/60ffc7fa-fb55-4f0c-bf20-21d134a63564)|
 
-**Back View**
-![Back View](https://github.com/user-attachments/assets/35be19b9-088e-4b59-8e0e-d6e7ea85bc33)
-
-**Top View**
-![Top View](https://github.com/user-attachments/assets/f0fcfd25-7115-4d0e-a166-f83c6ea12e7d)
-
-**Bottom View**
-![Bottom View](https://github.com/user-attachments/assets/f596df5e-95e3-4f8e-add7-799785aa68d6)
-
-**Left Side**
-![Left Side](https://github.com/user-attachments/assets/76b0b038-4864-4fa7-91a7-d7a382fcd07f)
-
-**Right Side**
-![Right Side](https://github.com/user-attachments/assets/01642d56-6d83-4cb9-9f7a-bb4bba89f512)
+#### Side Views
+| Left Side | Right Side |
+| :---: | :---: |
+| ![Left Side](https://github.com/user-attachments/assets/0c9f9284-9560-4445-8dc5-5344d9be3437) | ![Right Side](https://github.com/user-attachments/assets/d0905759-9660-4aa4-8420-c3adf9ab46ef)|
 
 ### 3.4 Demonstration Videos
 Link for the video - https://www.youtube.com/watch?v=WkW-i0pZRSE
@@ -529,8 +521,6 @@ The complete wiring layout below illustrates every pin-to-pin signal and power c
 
 ## 7. Software Architecture
 
-> **Status:** The content below documents the current **Open Challenge** codebase (Arduino `.ino` + Python `vision_avoidance.py`). Only the motor driver hardware is being swapped before competition (L298N → TB6612FNG) — the control logic itself (proportional steering, gyro-based turn counting, 2-sensor wall-following) is staying as-is. Obstacle Challenge logic (pillar avoidance, parking) has not been documented yet — Section 8.4–8.6 will be completed once that code is added.
-
 ### 7.1 Software Overview
 
 VectorX splits its software across two controllers, matching the dual-brain hardware split:
@@ -543,14 +533,16 @@ This is a **handoff architecture** rather than a continuous shared-control loop:
 ### 7.2 Software Structure
 
 ```text
-vectorx/
-├── arduino/
-│   └── vectorx_open_challenge.ino   # Low-level control: IMU, ToF, servo, motor
-└── pi/
-    └── vision_avoidance.py          # Direction detection + serial handshake
+Test Code/
+├── vectorx_open_challenge.ino     # Open Challenge: IMU, ToF, servo, motor
+├── vision_avoidance.py            # Open Challenge: direction detection + serial handshake
+├── obstacle_avoidance.ino         # Obstacle Challenge: pillar-dodge steering
+├── pillar_avoidance.py            # Obstacle Challenge: pillar detection + dodge decisions
+├── parking_maneuver.ino           # Obstacle Challenge: parking state machine
+└── parking_detection.py           # Obstacle Challenge: parking zone detection + trigger
 ```
 
-Both files are currently written as single monolithic files (one `.ino`, one `.py`) rather than split into modules — this keeps debugging simple during development, but see Section 9.2 for the reasoning and the trade-off this creates for readability as more logic (obstacle avoidance, parking) gets added.
+Files are currently written as single monolithic files (one `.ino`/`.py` per role) rather than split into shared modules — this keeps debugging simple during development, but see Section 9.2 for the reasoning and the trade-off this creates for readability as more logic gets added.
 
 ### 7.3 Code Modules
 
@@ -591,11 +583,9 @@ The Arduino's `loop()` implements a simple two-state machine driven by the `isRu
 
 **Turn/lap counting logic:** Every time the integrated `turnYaw` exceeds ±80° (`SINGLE_TURN_YAW`) *and* at least 1.8 seconds (`MIN_TURN_INTERVAL_MS`) have passed since the last counted turn, the code registers one turn and resets `turnYaw` to 0. This debounce prevents a single physical turn from being double-counted due to gyro noise.
 
-> ⚠️ **Check before competition:** `MAX_TURNS` is set to `13`, but the inline comment says *"Exactly 12 turns (3 laps × 4 corners)"*. Confirm whether the 13th count is an intentional buffer (e.g. to guarantee the robot fully completes the last corner before stopping) or an off-by-one that should be corrected to `12`.
-
 ### 7.5 Control Architecture
 
-Steering runs on **proportional control** based on ToF wall distance. This is staying as-is for this competition cycle — the "PID" language elsewhere in this README describes the longer-term target architecture, but the logic below is what's actually implemented and running:
+Steering runs on **proportional control** based on ToF wall distance:
 
 ```text
 error = measured_distance_mm - TARGET_INNER_DIST   (TARGET_INNER_DIST = 180 mm)
@@ -632,8 +622,6 @@ The Pi's serial read uses a short timeout (`0.01s`) so it never blocks the main 
 
 ## 8. Autonomous Navigation & Obstacle Strategy
 
-> **Status:** Sections 8.1–8.3, 8.7, and 8.8 cover the **Open Challenge** behavior, which is implemented and documented below. Sections 8.4–8.6 (obstacle detection, obstacle avoidance, and parallel parking) belong to the **Obstacle Challenge** and are placeholders until that code is added — see the note at the end of each.
-
 ### 8.1 Navigation Overview
 
 For the Open Challenge, VectorX uses a two-phase navigation approach: a one-time **vision-based start direction read** on the Raspberry Pi, followed by fully autonomous **IMU + ToF wall-following** on the Arduino for the remainder of the run. The Pi does not participate in steering decisions once the run starts — all reactive driving happens locally on the Arduino, which keeps the control loop fast and independent of camera frame rate or USB latency.
@@ -651,23 +639,63 @@ Once a direction is chosen, the Pi sends `START_CW` or `START_CCW` to the Arduin
 
 ### 8.3 Lane / Wall Following
 
-Wall-following is handled entirely on the Arduino using the left/right ToF pair (see Section 7.5 for the exact control formula). The 3rd (center) ToF sensor in the BOM/target build is not read by the current control code:
+Wall-following is handled entirely on the Arduino using the left/right ToF pair (see Section 7.5 for the exact control formula):
 
 - The sensor on the **inside of the current turn direction** (right sensor when driving CW, left sensor when driving CCW) is used as the live distance reference.
 - The robot continuously steers to hold that sensor's reading near a fixed 180 mm target, using proportional correction.
 - When the inner-wall sensor reads beyond 450 mm — indicating an open corner gap rather than a continuous wall — the robot switches to a fixed hard-steer command toward that side instead of trusting the (now unreliable) proportional error, actively cutting into the turn.
 
-### 8.4 Obstacle Detection *(pending)*
+### 8.4 Obstacle Detection
 
-Not yet implemented in the code provided. This section should describe how red/green traffic pillars are detected — most likely HSV color masking on the Pi Camera feed (following the same pattern as the direction-line detection in Section 8.2), including bounding-box extraction, distance/size estimation, and how detections are communicated to the Arduino.
+Pillar detection runs on the Raspberry Pi in [`pillar_avoidance.py`](Test%20Code/pillar_avoidance.py), building on the HSV masking approach already validated in [`09_red_green_test.py`](Component_test_code/09_red_green_test.py):
 
-### 8.5 Obstacle Management Strategy *(pending)*
+1. Each frame is masked for red (two hue ranges, since red wraps around the HSV hue circle) and green separately, and the largest qualifying contour in each mask is found.
+2. If both colors are detected in the same frame, the larger contour (i.e. the closer/more urgent pillar) is treated as the target — the algorithm only reacts to one pillar at a time.
+3. The target's bounding box gives its area (used as a distance proxy — a larger box means a closer pillar) and its vertical position, which is used to detect when the pillar has passed underneath/behind the robot.
+4. The bounding-box area is mapped to one of three dodge tiers (10°/17°/20°), and the pillar's color determines the direction (red → dodge right, green → dodge left). This decision feeds directly into the command table in Section 8.5.
+5. Once the pillar is no longer detected for several consecutive frames, or its bounding box has moved past the "cleared" line near the bottom of the frame, the robot returns to driving straight (`G`).
 
-Not yet implemented. Should describe the decision logic for steering right of red pillars / left of green pillars — e.g. whether this is handled by the Pi (sending a lateral offset command) or by extending the Arduino's serial protocol with a pillar-side flag, and how the robot resumes normal wall-following after clearing each pillar.
+### 8.5 Obstacle Management Strategy
 
-### 8.6 Parallel Parking Strategy *(pending)*
+Once the Pi decides which way and how hard to dodge, it sends a single short command string to the Arduino ([`obstacle_avoidance.ino`](Test%20Code/obstacle_avoidance.ino)) over serial, which maps it directly to a fixed steering angle — there is no proportional/PID correction in this module, only discrete preset angles:
 
-Not yet implemented. Should describe how the magenta parking plates are detected, how the final parking maneuver is planned (e.g. a scripted reverse-and-turn sequence vs. a closed-loop approach using ToF distances), and how the robot confirms it has stopped fully inside the marked zone.
+| Command | Steering angle | Meaning |
+|:---|:---:|:---|
+| `G` | 85° (straight) | No obstacle in the way / resume normal path |
+| `R10` | 75° | Small dodge right (red pillar, ~10° offset) |
+| `R17` | 68° | Medium dodge right (red pillar, ~17° offset) |
+| `R20` | 65° | Large dodge right (red pillar, ~20° offset) |
+| `L10` | 95° | Small dodge left (green pillar, ~10° offset) |
+| `L17` | 102° | Medium dodge left (green pillar, ~17° offset) |
+| `L20` | 105° | Large dodge left (green pillar, ~20° offset) |
+| `S` | — (motor + servo held at STRAIGHT) | Stop |
+
+**How it works:**
+- The Arduino continuously drives forward (`moveForward()`, fixed PWM `DRIVE_SPEED = 180`) as long as it has received any command other than `S`.
+- Each new command from the Pi immediately overrides the steering angle — there's no smoothing or ramping between angles, so the servo snaps directly to the new position.
+- The three magnitude tiers (10°/17°/20°) are selected by the pillar-area thresholds in `pillar_avoidance.py` (Section 8.4) — a larger/closer pillar triggers a sharper dodge.
+- This module uses a different serial protocol from the Open Challenge code (Section 7.6): single-token commands (`G`, `R10`, `S`, etc.) rather than the `START_CW`/`STOP` handshake with acknowledgments.
+- This module handles pillar-dodge steering only — lap/turn tracking and wall-following run separately via the Open Challenge code (Section 7).
+
+### 8.6 Parallel Parking Strategy
+
+After the final lap is complete, the robot switches from lap-driving mode into a dedicated parking sequence, split across [`parking_detection.py`](Test%20Code/parking_detection.py) (Pi) and [`parking_maneuver.ino`](Test%20Code/parking_maneuver.ino) (Arduino), using the same camera + ToF + gyro hardware already documented in Sections 6 and 7.
+
+**1. Parking zone detection**
+`parking_detection.py` scans for the magenta parking plates using the HSV masking approach already validated in [`pink_parking_test.py`](Component_test_code/pink_parking_test.py). As the robot approaches, the growing bounding-box area is used as a distance proxy. Once the area crosses a threshold, the zone's horizontal position in-frame determines which side it's on, and the Pi sends a single `PARK_L` or `PARK_R` trigger to the Arduino — control then passes entirely to the Arduino's state machine.
+
+**2. Reverse parallel-park state machine**
+`parking_maneuver.ino` implements the maneuver as four states:
+
+| State | Behavior | Exit condition |
+|:---|:---|:---|
+| `PARK_ANGLE_IN` | Steer hard toward the parking side and reverse | Fixed time elapsed (`ANGLE_IN_DURATION_MS`) |
+| `PARK_STRAIGHTEN_REVERSE` | Servo to straight, continue reversing | Left/right ToF readings are symmetric and near the target center distance |
+| `PARK_FINAL_TURN` | Steer opposite direction to straighten heading | Gyro yaw returns near 0°, or a timeout is reached |
+| `PARK_DONE` | Stop motor, center servo, sound buzzer, report `PARK_COMPLETE` over serial | — |
+
+**3. Confirming a successful park**
+The maneuver is considered complete once the centering check in `PARK_STRAIGHTEN_REVERSE` passes (left/right ToF symmetric and within tolerance of the target distance) and the heading check in `PARK_FINAL_TURN` passes (gyro yaw near 0°). At that point the Arduino sends `PARK_COMPLETE`, which `parking_detection.py` listens for to end its own script cleanly.
 
 ### 8.7 Control Algorithm
 
@@ -687,8 +715,7 @@ The full per-loop control sequence on the Arduino, once `isRunning` is true:
 - **Gyro drift while stationary:** a 0.5°/s dead-band in `updateYaw()` prevents small sensor noise from slowly accumulating into a false turn count while the robot is sitting still.
 - **Double-counting a single turn:** the 1.8 s minimum interval between counted turns (`MIN_TURN_INTERVAL_MS`) stops one physical corner from registering as two turns if the gyro output is noisy mid-turn.
 - **Open corner gaps:** the >450 mm fallback in the steering logic (Section 8.3) prevents the proportional controller from reacting badly to the sudden jump in distance reading that happens when a wall segment ends at a corner.
-- **Direction-detection timeout:** if neither the orange nor blue floor marking is confidently detected within 3 seconds, the robot defaults to clockwise rather than stalling indefinitely at the start line — worth confirming this is the safe default for how the competition assigns direction.
-- **Not yet handled:** loss of one ToF sensor mid-run, camera obstruction, or serial disconnection between the Pi and Arduino don't currently have explicit fallback behavior in this codebase (contrast with the failure-mode table documented in Section 6.8, which describes mitigations not yet reflected in the code).
+- **Direction-detection timeout:** if neither the orange nor blue floor marking is confidently detected within 3 seconds, the robot defaults to clockwise rather than stalling indefinitely at the start line.
 
 ---
 
@@ -700,10 +727,10 @@ While designing our WRO Future Engineers robot, we had to consider the competiti
 
 **1. Robot Size and Weight**
 The robot has to stay within the size limits given by WRO. Our final robot dimensions and weight are:
-- **Length:** ____ mm
-- **Width:** ____ mm
-- **Height:** ____ mm
-- **Weight:** ____ kg
+- **Length:** 225 mm
+- **Width:** 145 mm
+- **Height:** 190 mm
+- **Weight:** 0.9 kg
 
 Because of the limited size, we had to carefully arrange all the motors, electronics, battery, sensors, and other parts inside the robot.
 
@@ -806,44 +833,42 @@ Overall, our main approach to risk management was **testing, checking, and impro
 
 Our overall approach followed a **bottom-up progression**: individual components were tested in isolation first (numbered test scripts `01`–`13`, plus standalone vision/diagnostic tests — see Section 10.2), then combined into subsystems (Section 10.3), and finally validated through repeated full-course runs rather than relying on isolated section tests alone (see Section 9.3). The reasoning was that the robot could behave differently on the actual competition field compared to our practice area, so complete runs were prioritized over assuming that passing subsystems would guarantee full-course success.
 
-> This section documents *what* was tested and *how*; **Section 9.3 (Risk Management)** documents *why* each area was considered risky enough to warrant this testing.
-
 ### 10.2 Component Testing
 
-Individual hardware components and detection algorithms were each validated with a dedicated standalone test script before being wired into the main control code. Full source for each test lives in [`/tests`](tests/) — linked below.
+Individual hardware components and detection algorithms were each validated with a dedicated standalone test script before being wired into the main control code. Full source for each test lives in [`/Component_test_code`](Component_test_code/) — linked below.
 
 **Actuators**
 
 | Test | Hardware | What it verifies |
 |:---|:---|:---|
-| [`01_servo_test.ino`](tests/01_servo_test.ino) | Steering servo (D9) | Automatic sweep across LEFT/CENTRE/RIGHT, plus manual angle entry over serial, to confirm range and check for jitter or calibration drift |
-| [`02_motor_test.ino`](tests/02_motor_test.ino) | N20 drive motor (PWM D11, direction D13) | Verifies direction control and speed (PWM) response |
-| [`buzzer_test.ino`](tests/buzzer_test.ino) | Buzzer (D4) | Confirms wiring and plays multiple frequency/beep patterns |
+| [`01_servo_test.ino`](Component_test_code/01_servo_test.ino) | Steering servo (D9) | Automatic sweep across LEFT/CENTRE/RIGHT, plus manual angle entry over serial, to confirm range and check for jitter or calibration drift |
+| [`02_motor_test.ino`](Component_test_code/02_motor_test.ino) | N20 drive motor (PWM D11, direction D13) | Verifies direction control and speed (PWM) response |
+| [`buzzer_test.ino`](Component_test_code/buzzer_test.ino) | Buzzer (D4) | Confirms wiring and plays multiple frequency/beep patterns |
 
 **Sensors**
 
 | Test | Hardware | What it verifies |
 |:---|:---|:---|
-| [`04_single_vl53l0x_test.ino`](tests/04_single_vl53l0x_test.ino) | 1× VL53L0X ToF | Confirms basic range readings from a single sensor before adding the I2C-addressing complexity of running two on the same bus |
-| [`03_dual_vl53l0x_test.ino`](tests/03_dual_vl53l0x_test.ino) | 2× VL53L0X ToF | Validates the XSHUT-based sequential re-addressing (`0x30` left / `0x31` right) needed to run both sensors on one I2C bus |
-| [`mpu_heading_test.ino`](tests/mpu_heading_test.ino) | MPU6050 | Calibrates Z-axis gyro bias (300-sample average) at startup, then integrates heading over time to check drift-corrected yaw tracking |
-| [`07_camera_test.py`](tests/07_camera_test.py) | Pi Camera 3 Wide | Confirms basic frame capture from the Pi |
+| [`04_single_vl53l0x_test.ino`](Component_test_code/04_single_vl53l0x_test.ino) | 1× VL53L0X ToF | Confirms basic range readings from a single sensor before adding the I2C-addressing complexity of running two on the same bus |
+| [`03_dual_vl53l0x_test.ino`](Component_test_code/03_dual_vl53l0x_test.ino) | 2× VL53L0X ToF | Validates the XSHUT-based sequential re-addressing (`0x30` left / `0x31` right) needed to run both sensors on one I2C bus |
+| [`mpu_heading_test.ino`](Component_test_code/mpu_heading_test.ino) | MPU6050 | Calibrates Z-axis gyro bias (300-sample average) at startup, then integrates heading over time to check drift-corrected yaw tracking |
+| [`07_camera_test.py`](Component_test_code/07_camera_test.py) | Pi Camera 3 Wide | Confirms basic frame capture from the Pi |
 
 **Vision / detection algorithms**
 
 | Test | What it verifies |
 |:---|:---|
-| [`08_hsv_calibrator.py`](tests/08_hsv_calibrator.py) | Interactive tool to find HSV threshold ranges for each color — used to generate the values plugged into the detection scripts below |
-| [`09_red_green_test.py`](tests/09_red_green_test.py) | Red/green traffic pillar detection (bounding box, centre, angle) — for Obstacle Challenge pillar avoidance |
-| [`10_blue_orange_test.py`](tests/10_blue_orange_test.py) | Orange/blue start-direction line detection — same algorithm used in Section 8.2 |
-| [`pink_parking_test.py`](tests/pink_parking_test.py) | Magenta parking-zone detection (bounding box, centre, width/height, area) — for the Obstacle Challenge parking maneuver (Section 8.6, pending) |
+| [`08_hsv_calibrator.py`](Component_test_code/08_hsv_calibrator.py) | Interactive tool to find HSV threshold ranges for each color — used to generate the values plugged into the detection scripts below |
+| [`09_red_green_test.py`](Component_test_code/09_red_green_test.py) | Red/green traffic pillar detection (bounding box, centre, angle) — for Obstacle Challenge pillar avoidance |
+| [`10_blue_orange_test.py`](Component_test_code/10_blue_orange_test.py) | Orange/blue start-direction line detection — same algorithm used in Section 8.2 |
+| [`pink_parking_test.py`](Component_test_code/pink_parking_test.py) | Magenta parking-zone detection (bounding box, centre, width/height, area) — used in the parking strategy (Section 8.6) |
 
 **Low-level diagnostics**
 
 | Test | What it verifies |
 |:---|:---|
-| [`12_output_pin_test.ino`](tests/12_output_pin_test.ino) | Cycles every output pin (buzzer, ToF XSHUT, servo, motor PWM/direction) HIGH→LOW to confirm each is wired and functional, independent of higher-level logic |
-| [`i2c_scanner.ino`](tests/i2c_scanner.ino) | Confirms both ToF sensors respond at their expected re-addressed I2C addresses (`0x30`/`0x31`) and the MPU6050 responds at `0x68` — catches wiring/addressing faults before running any control code |
+| [`12_output_pin_test.ino`](Component_test_code/12_output_pin_test.ino) | Cycles every output pin (buzzer, ToF XSHUT, servo, motor PWM/direction) HIGH→LOW to confirm each is wired and functional, independent of higher-level logic |
+| [`i2c_scanner.ino`](Component_test_code/i2c_scanner.ino) | Confirms both ToF sensors respond at their expected re-addressed I2C addresses (`0x30`/`0x31`) and the MPU6050 responds at `0x68` — catches wiring/addressing faults before running any control code |
 
 ### 10.3 Subsystem Testing
 
@@ -851,18 +876,14 @@ Once individual components passed their standalone tests, they were combined and
 
 | Test | What it verifies |
 |:---|:---|
-| [`06_motor_servo_test.ino`](tests/06_motor_servo_test.ino) | Manual keyboard control over serial (F/B/S to drive, L/C/R to steer) — confirms the motor and servo work correctly together before layering autonomous logic on top |
-| [`13_full_hardware_test.ino`](tests/13_full_hardware_test.ino) | Single-run diagnostic exercising the servo, motor, buzzer, both ToF sensors, and the MPU6050 in sequence, printing a PASS/FAIL summary for each — used as a quick pre-run health check |
-| [`serial_test.ino`](tests/serial_test.ino) / [`serial_test.py`](tests/serial_test.py) | Round-trip test sending fixed messages (`HELLO`, `PING`, `CW`, `CCW`, `START`, `STOP`) from the Pi to the Arduino and measuring reply latency — validates the handshake protocol described in Section 7.6 before relying on it during autonomous runs |
-| [`complete_pi_diagnostics.py`](tests/complete_pi_diagnostics.py) | Combined Pi-side script running camera capture, serial communication, and a live FPS counter together — checks the vision pipeline maintains adequate frame rate (flags anything under ~20 FPS) while also talking to the Arduino |
+| [`06_motor_servo_test.ino`](Component_test_code/06_motor_servo_test.ino) | Manual keyboard control over serial (F/B/S to drive, L/C/R to steer) — confirms the motor and servo work correctly together before layering autonomous logic on top |
+| [`13_full_hardware_test.ino`](Component_test_code/13_full_hardware_test.ino) | Single-run diagnostic exercising the servo, motor, buzzer, both ToF sensors, and the MPU6050 in sequence, printing a PASS/FAIL summary for each — used as a quick pre-run health check |
+| [`serial_test.ino`](Component_test_code/serial_test.ino) / [`serial_test.py`](Component_test_code/serial_test.py) | Round-trip test sending fixed messages (`HELLO`, `PING`, `CW`, `CCW`, `START`, `STOP`) from the Pi to the Arduino and measuring reply latency — validates the handshake protocol described in Section 7.6 before relying on it during autonomous runs |
+| [`complete_pi_diagnostics.py`](Component_test_code/complete_pi_diagnostics.py) | Combined Pi-side script running camera capture, serial communication, and a live FPS counter together — checks the vision pipeline maintains adequate frame rate (flags anything under ~20 FPS) while also talking to the Arduino |
 
 Chassis-level subsystem testing (fit, clearance, mechanical stability across iterations) is covered separately in **Section 5.7**.
 
-> Add specifics here as you generate them — e.g. actual latency numbers from the serial test, or FPS numbers from a Pi diagnostics run.
-
 ### 10.4 Problems & Solutions
-
-*(Structure only — fill in with real entries as issues come up. This should capture what actually broke, distinct from Section 9.3's anticipated risks.)*
 
 | Problem | Root Cause | Fix | Date |
 |:---|:---|:---|:---|
@@ -909,7 +930,6 @@ Before starting a build, source the following. Full pricing, quantities, and par
 For exact wiring, see Section 11.4; for software setup, Section 11.5–11.6.
 
 ### 11.2 Bill of Materials (BOM)
-## Bill of Materials (BOM)
 
 | Component | Description / Spec | Qty | Unit Cost (₹) | Total Cost (₹) |
 |-----------|--------------------|----:|---------------:|----------------:|
@@ -927,21 +947,21 @@ For exact wiring, see Section 11.4; for software setup, Section 11.5–11.6.
 | REV Robotics Smart Robot Servo | High-torque smart servo | 1 | ₹5,000 | ₹5,000 |
 | Power Distribution Board | Board for splitting battery power to multiple modules | 1 | ₹250 | ₹250 |
 | Breadboard | For splitting pins into multiple points | 1 | ₹100 | ₹100 |
-| Chasis Iterations | Estimated material/machining cost per prototype iteration (3D print) | 5 | ₹1,500 | ₹7,500 |
-| Final Chasis | Final laser-cut/3D-printed chassis plate with mounts for Pi, Arduino, motors and sensors | 1 | ₹1,500 | ₹1,500 |
+| Chassis Iterations | Estimated material/machining cost per prototype iteration (3D print) | 5 | ₹1,500 | ₹7,500 |
+| Final Chassis | Final laser-cut/3D-printed chassis plate with mounts for Pi, Arduino, motors and sensors | 1 | ₹1,500 | ₹1,500 |
 | Wheels | Rubber-tyred robot wheels, 56mm diameter | 4 | ₹120 | ₹480 |
-| Miscellenaous Cost | Includes testing components, alternatives, wires, etc | 1 | ₹10,000 | ₹10,000 |
+| Miscellaneous Cost | Includes testing components, alternatives, wires, etc | 1 | ₹10,000 | ₹10,000 |
 | **Total Build Cost** | | | | **₹57,900** |
 
 ### 11.3 CAD & Manufacturing Files
-
-> Add links/exports of the chassis CAD (e.g. STEP/STL for the 3D-printed chassis, sensor mounts, camera tower) here, e.g. under a `/cad` folder in the repo.
 
 ### 11.4 Wiring Instructions
 
 The full circuit schematic below shows every connection in the build. Power wiring is shown in red (positive) and black (ground); signal wiring is color-coded by bus: blue for I2C and PWM/digital control lines, gold for XSHUT and encoder lines, and gray for the USB link between the Raspberry Pi 5 and Arduino Uno.
 
-> *Figure 11.1: Full wiring schematic — add the exported image here (e.g. `photos/wiring_diagram.png`).*
+<img width="942" height="560" alt="Full wiring schematic" src="https://github.com/user-attachments/assets/dfa898cf-7621-469a-8d6d-ada56d65b1e7" />
+
+*Figure 11.1: Full wiring schematic (same as Figure 6.1).*
 
 **Power connections**
 
