@@ -217,7 +217,7 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 
 ### 3.3 Multi-View Photographs
 **Front View**
-![Front View](https://github.com/user-attachments/assets/32821528-7d7f-487c-a146-7c006126cd19)
+<img width="400" alt="VectorX Logo" src="https://github.com/user-attachments/assets/66f19ca2-d940-4458-8834-a6aba510ca4b" />
 
 **Back View**
 ![Back View](https://github.com/user-attachments/assets/35be19b9-088e-4b59-8e0e-d6e7ea85bc33)
