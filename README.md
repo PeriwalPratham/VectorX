@@ -847,9 +847,9 @@ Individual hardware components and detection algorithms were each validated with
 
 | Test | Hardware | What it verifies |
 |:---|:---|:---|
-| [`01_servo_test.ino`](Component_test_code/01_servo_test.ino) | Steering servo (D9) | Automatic sweep across LEFT/CENTRE/RIGHT, plus manual angle entry over serial, to confirm range and check for jitter or calibration drift |
-| [`02_motor_test.ino`](Component_test_code/02_motor_test.ino) | N20 drive motor (PWM D11, direction D13) | Verifies direction control and speed (PWM) response |
-| [`buzzer_test.ino`](Component_test_code/buzzer_test.ino) | Buzzer (D4) | Confirms wiring and plays multiple frequency/beep patterns |
+| [`Servo_test.ino`](Component_test_code/Servo_test.ino) | Steering servo (D9) | Automatic sweep across LEFT/CENTRE/RIGHT, plus manual angle entry over serial, to confirm range and check for jitter or calibration drift |
+| [`Motor_test.ino`](Component_test_code/motor_test.ino) | N20 drive motor (PWM D11, direction D13) | Verifies direction control and speed (PWM) response |
+| [`Buzzer_test.ino`](Component_test_code/Buzzer_test.ino) | Buzzer (D4) | Confirms wiring and plays multiple frequency/beep patterns |
 
 **Sensors**
 
