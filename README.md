@@ -190,11 +190,60 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 ---
 
 ## 4. System Architecture
+## 4. System Architecture
 
 ### 4.1 Hardware Architecture
+
+We uses a **dual-brain architecture**, splitting compute between two controllers to benefit from their speciallities:
+
+- **Raspberry Pi 5 (8GB)** — Handles camera input and all OpenCV-based image processing (block detection, color line detection, parking  detection).
+- **Arduino Uno** — Handles real-time, low-latency tasks: reading the MPU-6050 gyro and ToF distance sensors, running PID motor control loops, and driving the steering servo and drive motor.
+
+**Why we split compute this way:**
+- Vision processing (OpenCV) is computationally heavy and non-deterministic in timing — unsuitable for a microcontroller.
+- Motor/servo control and sensor polling need **consistent, low-latency timing**, which the Arduino's simpler real-time loop handles more reliably than a full Linux OS on the Pi.
+- If the Pi's vision pipeline lags, the Arduino can still keep the car stable using gyro/ToF data independently.
+
+**Core hardware components:**
+
+| Subsystem | Component |
+|-----------|-----------|
+| Compute (vision) | Raspberry Pi 5 |
+| Compute (control) | Arduino Uno |
+| Camera | Pi Camera Module 3 Wide |
+| Steering actuator | REV Robotics Smart Robot Servo |
+| Drive motor | N20 12V 300RPM w/ Encoder |
+| Motor driver | DFRobot TB6612FNG |
+| Distance sensing | VL53L0X ToF ×3 |
+| Orientation sensing | MPU-6050 IMU |
+| Power | 11.1V battery → motors directly; 5V 5A buck converter → Pi/Arduino/sensors |
+
 ### 4.2 Software Architecture
+
+VectorX runs two separate codebases, one per controller:
+
+**Raspberry Pi 5 — Python**
+- Handles camera capture and OpenCV-based image processing (pillar color detection, lane/wall detection, parking line detection)
+- Sends steering angle and speed commands to the Arduino over USB serial
+- Written as a single script handling capture, detection, and serial communication in sequence
+
+**Arduino Uno — C++ (Arduino framework)**
+- Reads sensor data (MPU-6050 gyro, VL53L0X ToF sensors)
+- Runs PID control loops for motor speed and steering correction
+- Outputs PWM signals to the TB6612FNG motor driver and REV steering servo
+- Written as a single `.ino` sketch handling sensor reads, control logic, and actuator output in one file
+
+We have kept both codes for the Arduino and the Raspberry Pi in a single-file respectively, prioritizing reliability and ease of debugging.
+
 ### 4.3 System Communication
-### 4.4 Subsystem Integration
+
+The Raspberry Pi 5 and Arduino Uno communicate over a **USB serial connection**.
+
+1. The Pi processes each camera frame with OpenCV 
+2. These values are sent to the Arduino over USB serial.
+3. The Arduino parses the incoming command, cross-checks it against its own sensor readings (ToF, gyro), and outputs the final PWM signals to the servo and motor driver.
+
+This keeps a clear division of responsibility: the Pi give the data, and the Arduino decides *how* to safely execute it in real time.
 
 ---
 
