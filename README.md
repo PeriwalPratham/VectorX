@@ -112,9 +112,9 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
 
 </div>
 
-### 2.1 Team Members & Roles
+### 2.1 Team Members
 
-#### Pratham Periwal - role
+#### Pratham Periwal - Electronics Lead
 <table>
   <tr>
     <td width="200" align="center">
@@ -126,7 +126,7 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
   </tr>
 </table>
 
-#### Inaaya Sood - role
+#### Inaaya Sood - Computer Vision Lead
 <table>
   <tr>
     <td width="200" align="center">
@@ -142,7 +142,7 @@ I believe that every project is an opportunity to learn something new, and I am 
   </tr>
 </table>
 
-#### Swasti Kedia - role
+#### Swasti Kedia - Code Lead
 <table>
   <tr>
     <td width="200" align="center">
