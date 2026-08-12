@@ -219,12 +219,12 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 #### Primary Views
 | Front View | Back View | Top View | Bottom View |
 | :---: | :---: | :---: | :---: |
-| ![Front View](https://github.com/user-attachments/assets/052c0aa3-95c5-432e-9e41-60264cf95d36)| ![Back View](https://github.com/user-attachments/assets/3a425c7e-1edc-418f-903f-168d6803ff29)| ![Top View](https://github.com/user-attachments/assets/86e6bba4-1e96-4976-a34d-3238b6641e1c)| ![Bottom View](https://github.com/user-attachments/assets/60ffc7fa-fb55-4f0c-bf20-21d134a63564)|
+| ![Front](Robot Pics/Front View.png) | ![Back](Robot Pics/Back View.png) | ![Top](Robot Pics/Top View.png) | ![Bottom](Robot Pics/Bottom View.png) |
 
 #### Side Views
 | Left Side | Right Side |
 | :---: | :---: |
-| ![Left Side](https://github.com/user-attachments/assets/0c9f9284-9560-4445-8dc5-5344d9be3437) | ![Right Side](https://github.com/user-attachments/assets/d0905759-9660-4aa4-8420-c3adf9ab46ef)|
+| ![Left](Robot Pics/Left Side.png) | ![Right](Robot Pics/Right Side.png) |
 
 ### 3.4 Demonstration Videos
 Link for the video - https://www.youtube.com/watch?v=WkW-i0pZRSE
