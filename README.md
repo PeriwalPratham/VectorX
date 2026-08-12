@@ -216,16 +216,25 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 | Servo regulation | PDB 5V regulated header → steering servo |
 
 ### 3.3 Multi-View Photographs
-#### Primary Views
-| Front View | Back View | Top View | Bottom View |
-| :---: | :---: | :---: | :---: |
-| ![Front](Robot%20Pics/Front%20View.png) | ![Back](Robot%20Pics/Back%20View.png) | ![Top](Robot%20Pics/Top%20View.png) | ![Bottom](Robot%20Pics/Bottom%20View.png) |
+#### Multi-View Photographs
 
-#### Side Views
-| Left Side | Right Side |
-| :---: | :---: |
-| ![Left](Robot%20Pics/Left%20Side.png) | ![Right](Robot%20Pics/Right%20Side.png) |
+**Front View**
+<img src="Robot Pics/Front View.png" width="400">
 
+**Back View**
+<img src="Robot Pics/Back View.png" width="400">
+
+**Top View**
+<img src="Robot Pics/Top View.png" width="400">
+
+**Bottom View**
+<img src="Robot Pics/Bottom View.png" width="400">
+
+**Left Side**
+<img src="Robot Pics/Left Side.png" width="400">
+
+**Right Side**
+<img src="Robot Pics/Right Side.png" width="400">
 ### 3.4 Demonstration Videos
 Link for the video - https://www.youtube.com/watch?v=WkW-i0pZRSE
 
