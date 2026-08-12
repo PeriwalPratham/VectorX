@@ -35,7 +35,7 @@
 **VectorX** is our self-driving car built for the **World Robot Olympiad (WRO) Future Engineers (FE) 2026** competition. Our goal was to build a fast, reliable car that can navigate an obstacle-filled track autonomously. We 3D-printed our custom chassis & run everything on it using a "dual brain" method. It combines a **Raspberry Pi 5** for image processing & obstacle detection and an **Arduino Uno** for motor & sensor control.
 
 #### Key Performance Specs
-* **Dimensions -** x mm × y mm × z mm (Fits WRO 300mm x 200mm limit)
+* **Dimensions -** Length: 225 mm width:145 mm Height:195 mm(Fits WRO 300mm x 200mm limit)
 * **Steering -** Front Ackermann Steering (REV Smart Servo)
 * **Drive System -** Rear Mechanical Differential driven by DC Motor
 * **Dual-Brain Compute -** Raspberry Pi 5 + Arduino Uno
