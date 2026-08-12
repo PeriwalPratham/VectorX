@@ -655,7 +655,7 @@ Pillar detection runs on the Raspberry Pi in [`pillar_avoidance.py`](Component_t
 
 ### 8.5 Obstacle Management Strategy
 
-Once the Pi decides which way and how hard to dodge, it sends a single short command string to the Arduino ([`obstacle_avoidance.ino`](Test%20Code/obstacle_avoidance.ino)) over serial, which maps it directly to a fixed steering angle — there is no proportional/PID correction in this module, only discrete preset angles:
+Once the Pi decides which way and how hard to dodge, it sends a single short command string to the Arduino ([`obstacle_avoidance.ino`](Component_test_code/obstacle_avoidance.ino)) over serial, which maps it directly to a fixed steering angle — there is no proportional/PID correction in this module, only discrete preset angles:
 
 | Command | Steering angle | Meaning |
 |:---|:---:|:---|
