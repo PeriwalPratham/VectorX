@@ -8,12 +8,14 @@
 
 <br />
 
-[![Website](https://img.shields.io/badge/Website-Vector%20X-green?style=for-the-badge&logo=googlechrome&logoColor=white)](https://your-website-url.com)
+[![Website](https://img.shields.io/badge/Website-Vector%20X-green?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.youtube.com/@VectorX1358)
 [![YouTube](https://img.shields.io/badge/YouTube-Vector%20X-red?style=for-the-badge&logo=youtube&logoColor=white)](https://your-youtube-channel-url.com)
 
 </div>
 
 ---
+
+Link for the video : https://youtu.be/WkW-i0pZRSE?si=gT4hQuf2EA_r-YDU
 
 ## So, what can you find here?
 
