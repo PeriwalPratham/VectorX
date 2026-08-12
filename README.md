@@ -867,16 +867,16 @@ Individual hardware components and detection algorithms were each validated with
 
 | Test | What it verifies |
 |:---|:---|
-| [`HSV_Calibrator.py](Component_test_code/Hsv_calibration_test.py) | Interactive tool to find HSV threshold ranges for each color — used to generate the values plugged into the detection scripts below |
-| [`Orange_Blue_Test.py`](Test_Code/orange_blue_marker.py) | Orange/blue start-direction line detection — same algorithm used in Section 8.2 |
+| [HSV_Calibrator.py](Component_test_code/Hsv_calibration_test.py) | Interactive tool to find HSV threshold ranges for each color — used to generate the values plugged into the detection scripts below |
+| [`Orange_Blue_Test.py`](Component_test_code/orange_blue_test.py) | Orange/blue start-direction line detection — same algorithm used in Section 8.2 |
 | [`Pink_Parking_Test.py`](Component_test_code/pink_plate_parking.py) | Magenta parking-zone detection (bounding box, centre, width/height, area) — used in the parking strategy (Section 8.6) |
 
 **Low-level diagnostics**
 
 | Test | What it verifies |
 |:---|:---|
-| [`12_output_pin_test.ino`](Component_test_code/12_output_pin_test.ino) | Cycles every output pin (buzzer, ToF XSHUT, servo, motor PWM/direction) HIGH→LOW to confirm each is wired and functional, independent of higher-level logic |
-| [`i2c_scanner.ino`](Component_test_code/i2c_scanner.ino) | Confirms both ToF sensors respond at their expected re-addressed I2C addresses (`0x30`/`0x31`) and the MPU6050 responds at `0x68` — catches wiring/addressing faults before running any control code |
+| [`Output_Pin.ino`](Component_test_code/output_pin.ino) | Cycles every output pin (buzzer, ToF XSHUT, servo, motor PWM/direction) HIGH→LOW to confirm each is wired and functional, independent of higher-level logic |
+| [`I2C_Scanner.ino`](Component_test_code/I2C.ino) | Confirms both ToF sensors respond at their expected re-addressed I2C addresses (`0x30`/`0x31`) and the MPU6050 responds at `0x68` — catches wiring/addressing faults before running any control code |
 
 ### 10.3 Subsystem Testing
 
@@ -884,10 +884,9 @@ Once individual components passed their standalone tests, they were combined and
 
 | Test | What it verifies |
 |:---|:---|
-| [`06_motor_servo_test.ino`](Component_test_code/06_motor_servo_test.ino) | Manual keyboard control over serial (F/B/S to drive, L/C/R to steer) — confirms the motor and servo work correctly together before layering autonomous logic on top |
-| [`13_full_hardware_test.ino`](Component_test_code/13_full_hardware_test.ino) | Single-run diagnostic exercising the servo, motor, buzzer, both ToF sensors, and the MPU6050 in sequence, printing a PASS/FAIL summary for each — used as a quick pre-run health check |
-| [`serial_test.ino`](Component_test_code/serial_test.ino) / [`serial_test.py`](Component_test_code/serial_test.py) | Round-trip test sending fixed messages (`HELLO`, `PING`, `CW`, `CCW`, `START`, `STOP`) from the Pi to the Arduino and measuring reply latency — validates the handshake protocol described in Section 7.6 before relying on it during autonomous runs |
-| [`complete_pi_diagnostics.py`](Component_test_code/complete_pi_diagnostics.py) | Combined Pi-side script running camera capture, serial communication, and a live FPS counter together — checks the vision pipeline maintains adequate frame rate (flags anything under ~20 FPS) while also talking to the Arduino |
+| [`Motor+Servo_Test.ino`](Component_test_code/motor_servo_test.ino) | Manual keyboard control over serial (F/B/S to drive, L/C/R to steer) — confirms the motor and servo work correctly together before layering autonomous logic on top |
+| [`Hardware_Test.ino`](Component_test_code/hardware.ino) | Single-run diagnostic exercising the servo, motor, buzzer, both ToF sensors, and the MPU6050 in sequence, printing a PASS/FAIL summary for each — used as a quick pre-run health check |
+| [`Complete_Pi_Diagnostics.py`](Component_test_code/pi_diagnostics.py) | Combined Pi-side script running camera capture, serial communication, and a live FPS counter together — checks the vision pipeline maintains adequate frame rate (flags anything under ~20 FPS) while also talking to the Arduino |
 
 Chassis-level subsystem testing (fit, clearance, mechanical stability across iterations) is covered separately in **Section 5.7**.
 
