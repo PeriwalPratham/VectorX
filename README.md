@@ -109,7 +109,9 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
 
 <div align="center">
 
-![Team Photo](photos/team_photo.jpg)
+<img width="5712" height="4284" alt="IMG_3038 (2)" src="https://github.com/user-attachments/assets/29931c7d-84a4-4217-aa9f-cb9609c3a573" />
+
+
 
 ### Team VectorX
 **Country:** India
