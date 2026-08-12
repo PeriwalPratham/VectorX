@@ -125,7 +125,7 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
       <img src="photos/pratham.jpg" width="180" alt="Pratham Periwal" />
     </td>
     <td>
-      Hi, I'm Pratham! I like xyz.
+      Hi, I'm Pratham! I am a 14-year-old from Podar International School.I love physics and programming which led me into robotics I love building and making projects and learning about new things
     </td>
   </tr>
 </table>
