@@ -217,23 +217,20 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 
 #### Multi-View Photographs
 
-**Front View**
-<img src="Robot Photos/Front View.jpeg" width="400">
-
-**Back View**
-<img src="Robot Photos/Back View.jpeg" width="400">
-
-**Top View**
-<img src="Robot Photos/Top View.jpeg" width="400">
-
-**Bottom View**
-<img src="Robot Photos/Bottom View.jpeg" width="400">
-
-**Left Side**
-<img src="Robot Photos/Left View.jpeg" width="400">
-
-**Right Side**
-<img src="Robot Photos/Right View.jpeg" width="400">
+<table align="center">
+  <tr>
+    <td align="center"><b>Front View</b><br><img src="Robot Photos/Front View.jpeg" width="300"></td>
+    <td align="center"><b>Back View</b><br><img src="Robot Photos/Back View.jpeg" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Top View</b><br><img src="Robot Photos/Top View.jpeg" width="300"></td>
+    <td align="center"><b>Bottom View</b><br><img src="Robot Photos/Bottom View.jpeg" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Left Side</b><br><img src="Robot Photos/Left View.jpeg" width="300"></td>
+    <td align="center"><b>Right Side</b><br><img src="Robot Photos/Right View.jpeg" width="300"></td>
+  </tr>
+</table>
 
 ### 3.4 Demonstration Videos
 Link for the video - https://www.youtube.com/watch?v=WkW-i0pZRSE
