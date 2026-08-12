@@ -134,7 +134,7 @@ VectorX works using a simple system - **Sense ➔ Decide ➔ Act**
 <table>
   <tr>
     <td width="200" align="center">
-      <img src="photos/inaaya.jpg" width="180" alt="Inaaya Sood" />
+      <img src="About Team/Inaaya Sood.png" width="180" alt="Inaaya Sood" />
     </td>
     <td>
       I am a 14-year-old Class 9 student at SVKM JV Parekh International School with a strong passion for robotics, programming, and engineering. I enjoy reading, coding, painting, and 3D designing, and I am always eager to explore new technologies and develop innovative solutions.
