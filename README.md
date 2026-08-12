@@ -399,6 +399,1660 @@ Each iteration was tested for fit, component clearance, and mechanical stability
 ### 8.6 Parallel Parking Strategy
 ### 8.7 Control Algorithm
 ### 8.8 Edge Cases & Safeguards
+### 8.9 OpenCV codes-
+# Computer Vision Development
+
+Our computer vision system was developed in multiple stages.
+
+The programs were tested individually before being combined into the final autonomous vision system.
+
+The development process included:
+
+1. HSV colour calibration
+2. Basic colour detection
+3. Orange and blue track-marker detection
+4. Track-direction detection
+5. Black line detection
+6. Distance estimation
+7. Red and green obstacle detection
+8. Autonomous obstacle avoidance
+9. Raspberry Pi–Arduino communication
+
+---
+
+# 1. HSV Colour Tuner
+
+## Objective
+
+Before detecting colours reliably, the HSV ranges needed to be calibrated for our camera and lighting conditions.
+
+Instead of manually guessing the HSV values, we created an interactive **HSV Tuner**.
+
+The tuner allows us to select a colour and adjust:
+
+- Lower Hue
+- Lower Saturation
+- Lower Value
+- Upper Hue
+- Upper Saturation
+- Upper Value
+
+The program displays the original camera feed, the binary mask, and the filtered result simultaneously.
+
+## Code
+
+```python
+import cv2
+import numpy as np
+
+
+def dummy(x):
+    pass
+
+
+colour_presets = {
+    0: {
+        "name": "Red",
+        "hsv": [0, 120, 70, 10, 255, 255]
+    },
+
+    1: {
+        "name": "Green",
+        "hsv": [36, 100, 100, 86, 255, 255]
+    },
+
+    2: {
+        "name": "Pink",
+        "hsv": [140, 100, 100, 170, 255, 255]
+    },
+
+    3: {
+        "name": "Orange",
+        "hsv": [11, 100, 100, 25, 255, 255]
+    },
+
+    4: {
+        "name": "Blue",
+        "hsv": [94, 80, 80, 126, 255, 255]
+    }
+}
+
+
+cv2.namedWindow(
+    "HSV Tuner",
+    cv2.WINDOW_NORMAL
+)
+
+cv2.resizeWindow(
+    "HSV Tuner",
+    450,
+    350
+)
+
+
+cv2.createTrackbar(
+    "Select Color",
+    "HSV Tuner",
+    0,
+    4,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Lower H",
+    "HSV Tuner",
+    0,
+    170,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Lower S",
+    "HSV Tuner",
+    0,
+    255,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Lower V",
+    "HSV Tuner",
+    0,
+    255,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Upper H",
+    "HSV Tuner",
+    179,
+    179,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Upper S",
+    "HSV Tuner",
+    255,
+    255,
+    dummy
+)
+
+cv2.createTrackbar(
+    "Upper V",
+    "HSV Tuner",
+    255,
+    255,
+    dummy
+)
+
+
+cap = cv2.VideoCapture(0)
+
+last_selected_color = -1
+
+
+while True:
+
+    ret, frame = cap.read()
+
+    if not ret:
+
+        print("Failed to capture video.")
+
+        break
+
+
+    current_color_idx = cv2.getTrackbarPos(
+        "Select Color",
+        "HSV Tuner"
+    )
+
+
+    # Load preset whenever a new colour is selected
+    if current_color_idx != last_selected_color:
+
+        hsv_vals = colour_presets[
+            current_color_idx
+        ]["hsv"]
+
+        cv2.setTrackbarPos(
+            "Lower H",
+            "HSV Tuner",
+            hsv_vals[0]
+        )
+
+        cv2.setTrackbarPos(
+            "Lower S",
+            "HSV Tuner",
+            hsv_vals[1]
+        )
+
+        cv2.setTrackbarPos(
+            "Lower V",
+            "HSV Tuner",
+            hsv_vals[2]
+        )
+
+        cv2.setTrackbarPos(
+            "Upper H",
+            "HSV Tuner",
+            hsv_vals[3]
+        )
+
+        cv2.setTrackbarPos(
+            "Upper S",
+            "HSV Tuner",
+            hsv_vals[4]
+        )
+
+        cv2.setTrackbarPos(
+            "Upper V",
+            "HSV Tuner",
+            hsv_vals[5]
+        )
+
+        last_selected_color = current_color_idx
+
+
+    # Read current slider values
+
+    lh = cv2.getTrackbarPos(
+        "Lower H",
+        "HSV Tuner"
+    )
+
+    ls = cv2.getTrackbarPos(
+        "Lower S",
+        "HSV Tuner"
+    )
+
+    lv = cv2.getTrackbarPos(
+        "Lower V",
+        "HSV Tuner"
+    )
+
+    uh = cv2.getTrackbarPos(
+        "Upper H",
+        "HSV Tuner"
+    )
+
+    us = cv2.getTrackbarPos(
+        "Upper S",
+        "HSV Tuner"
+    )
+
+    uv = cv2.getTrackbarPos(
+        "Upper V",
+        "HSV Tuner"
+    )
+
+
+    # Update selected colour's preset
+    colour_presets[
+        current_color_idx
+    ]["hsv"] = [
+        lh,
+        ls,
+        lv,
+        uh,
+        us,
+        uv
+    ]
+
+
+    # Convert image to HSV
+
+    hsv_frame = cv2.cvtColor(
+        frame,
+        cv2.COLOR_BGR2HSV
+    )
+
+
+    # Create colour mask
+
+    lower_bound = np.array(
+        [lh, ls, lv]
+    )
+
+    upper_bound = np.array(
+        [uh, us, uv]
+    )
+
+    mask = cv2.inRange(
+        hsv_frame,
+        lower_bound,
+        upper_bound
+    )
+
+
+    # Apply mask to original image
+
+    masked_result = cv2.bitwise_and(
+        frame,
+        frame,
+        mask=mask
+    )
+
+
+    color_name = colour_presets[
+        current_color_idx
+    ]["name"]
+
+
+    cv2.putText(
+        frame,
+        f"Active Color: {color_name}",
+        (10, 30),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (0, 255, 0),
+        2
+    )
+
+
+    cv2.imshow(
+        "Webcam Feed",
+        frame
+    )
+
+    cv2.imshow(
+        f"Mask ({color_name})",
+        mask
+    )
+
+    cv2.imshow(
+        "Filtered Result",
+        masked_result
+    )
+
+
+    if (
+        cv2.waitKey(1) & 0xFF
+        == ord('q')
+    ):
+
+        break
+
+
+cap.release()
+
+cv2.destroyAllWindows()
+```
+
+## Explanation
+
+### HSV Presets
+
+The program stores starting HSV values for five colours:
+
+| Index | Colour |
+|---:|---|
+| 0 | Red |
+| 1 | Green |
+| 2 | Pink |
+| 3 | Orange |
+| 4 | Blue |
+
+These values are stored inside the `colour_presets` dictionary.
+
+The values can then be adjusted using the sliders.
+
+---
+
+### Interactive Trackbars
+
+The program creates six trackbars:
+
+- `Lower H`
+- `Lower S`
+- `Lower V`
+- `Upper H`
+- `Upper S`
+- `Upper V`
+
+These sliders allow the HSV range to be changed while the camera is running.
+
+This is useful because lighting conditions can change the appearance of colours.
+
+---
+
+### Colour Mask
+
+The camera image is converted to HSV:
+
+```python
+hsv_frame = cv2.cvtColor(
+    frame,
+    cv2.COLOR_BGR2HSV
+)
+```
+
+The selected HSV range is then converted into a binary mask:
+
+```python
+mask = cv2.inRange(
+    hsv_frame,
+    lower_bound,
+    upper_bound
+)
+```
+
+Pixels inside the selected range become white, while pixels outside the range become black.
+
+---
+
+### Filtered Result
+
+The mask is applied to the original frame:
+
+```python
+masked_result = cv2.bitwise_and(
+    frame,
+    frame,
+    mask=mask
+)
+```
+
+This allows us to see exactly which parts of the image are being detected.
+
+### Development Benefit
+
+The HSV tuner was used to experimentally determine colour ranges rather than relying only on theoretical HSV values.
+
+This helped create more reliable colour detection for the actual camera and competition environment.
+
+---
+
+# 2. Black Line Detection
+
+## Objective
+
+The next stage was to detect the **black track/line** using the camera.
+
+The image is converted to HSV and a mask is created for dark pixels.
+
+The camera image is also divided into three vertical sections:
+
+- Left
+- Centre
+- Right
+
+The number of black pixels in each section is counted.
+
+This provides information about where the black line is located in the camera's field of view.
+
+## Code
+
+```python
+import cv2
+import numpy as np
+
+
+cap = cv2.VideoCapture(0)
+
+
+while True:
+
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+
+    # Convert BGR to HSV
+
+    hsv = cv2.cvtColor(
+        frame,
+        cv2.COLOR_BGR2HSV
+    )
+
+
+    # ========================================
+    # BLACK COLOUR MASK
+    # ========================================
+
+    lower_black = np.array(
+        [0, 0, 0]
+    )
+
+    upper_black = np.array(
+        [155, 255, 140]
+    )
+
+    black_mask = cv2.inRange(
+        hsv,
+        lower_black,
+        upper_black
+    )
+
+
+    # ========================================
+    # FIND BLACK CONTOURS
+    # ========================================
+
+    black_contours, _ = cv2.findContours(
+        black_mask,
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_SIMPLE
+    )
+
+
+    for contour in black_contours:
+
+        if cv2.contourArea(contour) > 500:
+
+            x, y, w, h = cv2.boundingRect(
+                contour
+            )
+
+            cv2.rectangle(
+                frame,
+                (x, y),
+                (x + w, y + h),
+                (0, 0, 255),
+                2
+            )
+
+
+    # ========================================
+    # DIVIDE IMAGE INTO THREE SECTIONS
+    # ========================================
+
+    height, width = black_mask.shape
+
+    section_width = width // 3
+
+
+    # Draw section boundaries
+
+    cv2.line(
+        frame,
+        (section_width, 0),
+        (section_width, height),
+        (0, 255, 0),
+        2
+    )
+
+    cv2.line(
+        frame,
+        (2 * section_width, 0),
+        (2 * section_width, height),
+        (0, 255, 0),
+        2
+    )
+
+
+    # ========================================
+    # COUNT BLACK PIXELS
+    # ========================================
+
+    # Left section
+
+    left_mask = black_mask[
+        :,
+        :section_width
+    ]
+
+    left_pixels = cv2.countNonZero(
+        left_mask
+    )
+
+
+    # Centre section
+
+    center_mask = black_mask[
+        :,
+        section_width:2 * section_width
+    ]
+
+    center_pixels = cv2.countNonZero(
+        center_mask
+    )
+
+
+    # Right section
+
+    right_mask = black_mask[
+        :,
+        2 * section_width:
+    ]
+
+    right_pixels = cv2.countNonZero(
+        right_mask
+    )
+
+
+    print(
+        f"Left section has "
+        f"{left_pixels} black pixels"
+    )
+
+    print(
+        f"Center section has "
+        f"{center_pixels} black pixels"
+    )
+
+    print(
+        f"Right section has "
+        f"{right_pixels} black pixels"
+    )
+
+    print("--------------------------------")
+
+
+    cv2.imshow(
+        "Webcam",
+        frame
+    )
+
+    cv2.imshow(
+        "Black Mask",
+        black_mask
+    )
+
+
+    if (
+        cv2.waitKey(1) & 0xFF
+        == ord('q')
+    ):
+
+        break
+
+
+cap.release()
+
+cv2.destroyAllWindows()
+```
+
+## Explanation
+
+### Black Mask
+
+The program creates an HSV range for dark pixels:
+
+```python
+lower_black = np.array([0, 0, 0])
+upper_black = np.array([155, 255, 140])
+```
+
+The mask is created using:
+
+```python
+black_mask = cv2.inRange(
+    hsv,
+    lower_black,
+    upper_black
+)
+```
+
+The resulting image contains the detected black regions.
+
+---
+
+### Contour Detection
+
+Contours are detected from the black mask:
+
+```python
+black_contours, _ = cv2.findContours(...)
+```
+
+Contours with an area greater than `500` pixels are considered significant.
+
+A bounding rectangle is then drawn around each detected region.
+
+---
+
+### Dividing the Camera Image
+
+The camera image is divided into three equal vertical sections:
+
+```text
+┌────────────┬────────────┬────────────┐
+│            │            │            │
+│    LEFT    │   CENTRE   │    RIGHT   │
+│            │            │            │
+└────────────┴────────────┴────────────┘
+```
+
+The width of each section is calculated using:
+
+```python
+section_width = width // 3
+```
+
+Two vertical lines are drawn to show the boundaries.
+
+---
+
+### Counting Black Pixels
+
+The program extracts each section from the black mask.
+
+For example, the left section is:
+
+```python
+left_mask = black_mask[
+    :,
+    :section_width
+]
+```
+
+The number of white pixels in that mask is then counted:
+
+```python
+left_pixels = cv2.countNonZero(
+    left_mask
+)
+```
+
+The same process is repeated for the centre and right sections.
+
+The result tells us how much black area is present in each section.
+
+---
+
+## Decision Concept
+
+The pixel counts can later be used for steering.
+
+For example:
+
+| Highest black pixel count | Possible interpretation |
+|---|---|
+| Left | Line is predominantly on the left |
+| Centre | Line is predominantly centred |
+| Right | Line is predominantly on the right |
+
+This program currently **measures and prints the values**. It does not itself make a steering decision.
+
+---
+
+# 3. Orange and Blue Track Marker Detection
+
+## Objective
+
+Orange and blue markers were detected to determine the direction of the track.
+
+## Code
+
+```python
+import cv2
+import numpy as np
+
+
+cap = cv2.VideoCapture(0)
+
+
+while True:
+
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+
+    hsv = cv2.cvtColor(
+        frame,
+        cv2.COLOR_BGR2HSV
+    )
+
+
+    # Orange
+
+    lower_orange = np.array(
+        [10, 100, 100]
+    )
+
+    upper_orange = np.array(
+        [25, 255, 255]
+    )
+
+    orange_mask = cv2.inRange(
+        hsv,
+        lower_orange,
+        upper_orange
+    )
+
+
+    # Blue
+
+    lower_blue = np.array(
+        [85, 50, 100]
+    )
+
+    upper_blue = np.array(
+        [130, 255, 255]
+    )
+
+    blue_mask = cv2.inRange(
+        hsv,
+        lower_blue,
+        upper_blue
+    )
+
+
+    # Orange contours
+
+    orange_contours, _ = cv2.findContours(
+        orange_mask,
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_SIMPLE
+    )
+
+
+    for contour in orange_contours:
+
+        if cv2.contourArea(contour) > 500:
+
+            x, y, w, h = cv2.boundingRect(
+                contour
+            )
+
+            cv2.rectangle(
+                frame,
+                (x, y),
+                (x + w, y + h),
+                (0, 165, 255),
+                2
+            )
+
+            print(
+                f"Orange detected: "
+                f"x={x}, y={y}"
+            )
+
+            break
+
+
+    # Blue contours
+
+    blue_contours, _ = cv2.findContours(
+        blue_mask,
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_SIMPLE
+    )
+
+
+    for contour in blue_contours:
+
+        if cv2.contourArea(contour) > 500:
+
+            x, y, w, h = cv2.boundingRect(
+                contour
+            )
+
+            cv2.rectangle(
+                frame,
+                (x, y),
+                (x + w, y + h),
+                (255, 0, 0),
+                2
+            )
+
+            print(
+                f"Blue detected: "
+                f"x={x}, y={y}"
+            )
+
+            break
+
+
+    cv2.imshow(
+        "Webcam",
+        frame
+    )
+
+
+    if (
+        cv2.waitKey(1) & 0xFF
+        == ord('q')
+    ):
+
+        break
+
+
+cap.release()
+
+cv2.destroyAllWindows()
+```
+
+## Explanation
+
+The camera image is converted into HSV.
+
+Two masks are created:
+
+- Orange
+- Blue
+
+Contours are then found within each mask.
+
+A contour is accepted when its area is greater than `500` pixels.
+
+The bounding rectangle provides the position and dimensions of the detected marker.
+
+The marker's position is printed and displayed on the camera feed.
+
+---
+
+# 4. Orange and Blue Track Direction
+
+## Objective
+
+The positions of the orange and blue markers are compared to determine which side of the track is the inner side.
+
+## Code
+
+```python
+orange_bottom_y = -1
+blue_bottom_y = -1
+
+
+# Orange
+
+orange_contours, _ = cv2.findContours(
+    orange_mask,
+    cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE
+)
+
+for contour in orange_contours:
+
+    if cv2.contourArea(contour) > 500:
+
+        x, y, w, h = cv2.boundingRect(
+            contour
+        )
+
+        orange_bottom_y = y + h
+
+        break
+
+
+# Blue
+
+blue_contours, _ = cv2.findContours(
+    blue_mask,
+    cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE
+)
+
+for contour in blue_contours:
+
+    if cv2.contourArea(contour) > 500:
+
+        x, y, w, h = cv2.boundingRect(
+            contour
+        )
+
+        blue_bottom_y = y + h
+
+        break
+
+
+# Compare positions
+
+if (
+    orange_bottom_y != -1
+    and blue_bottom_y != -1
+):
+
+    if orange_bottom_y > blue_bottom_y:
+
+        print(
+            "Orange is closer."
+        )
+
+        print(
+            "Inner track is RIGHT."
+        )
+
+    elif blue_bottom_y > orange_bottom_y:
+
+        print(
+            "Blue is closer."
+        )
+
+        print(
+            "Inner track is LEFT."
+        )
+```
+
+## Explanation
+
+The bottom of each bounding box is calculated using:
+
+```python
+y + h
+```
+
+The marker with the larger Y-coordinate appears lower in the camera image.
+
+Therefore:
+
+```text
+Orange Y > Blue Y
+        ↓
+Orange is closer
+        ↓
+Inner track = RIGHT
+```
+
+Whereas:
+
+```text
+Blue Y > Orange Y
+        ↓
+Blue is closer
+        ↓
+Inner track = LEFT
+```
+
+This allows the robot to determine the track direction from the visual position of the markers.
+
+---
+
+# 5. Distance Estimation
+
+## Objective
+
+Distance estimation was developed so that the robot could determine when an obstacle was close enough to require avoidance.
+
+## Code
+
+```python
+REAL_WIDTH = 4.8
+FOCAL_LENGTH = 500.0
+
+distance = (
+    REAL_WIDTH * FOCAL_LENGTH
+) / w
+
+print(
+    f"Distance: "
+    f"{distance:.1f} cm"
+)
+```
+
+## Explanation
+
+The system uses the pinhole-camera approximation:
+
+```text
+Distance = (Real Object Width × Focal Length)
+           ------------------------------------
+                 Object Width in Pixels
+```
+
+The variables represent:
+
+| Variable | Meaning |
+|---|---|
+| `REAL_WIDTH` | Known real-world width of the detected object |
+| `FOCAL_LENGTH` | Calibrated camera focal length |
+| `w` | Width of the detected object in pixels |
+| `distance` | Estimated distance from the camera |
+
+As the obstacle gets closer, its width in the image increases.
+
+Therefore, the calculated distance decreases.
+
+The focal length was calibrated for the camera setup before being used in the obstacle-detection system.
+
+---
+
+# 6. Complete Obstacle Detection and Avoidance
+
+## Objective
+
+The final system combines the colour detection and distance estimation systems.
+
+The Raspberry Pi:
+
+1. Detects the track direction.
+2. Detects red and green obstacles.
+3. Estimates their distance.
+4. Determines which obstacle is closest.
+5. Selects the required dodge direction.
+6. Sends the command to the Arduino.
+
+## Code
+
+```python
+import cv2
+import numpy as np
+import serial
+import time
+
+
+# ========================================
+# SERIAL SETUP
+# ========================================
+
+try:
+
+    arduino = serial.Serial(
+        '/dev/ttyUSB0',
+        115200,
+        timeout=1
+    )
+
+    time.sleep(2)
+
+    print("Connected to Arduino.")
+
+except Exception as e:
+
+    print(
+        f"Serial connection failed: {e}"
+    )
+
+    arduino = None
+
+
+# ========================================
+# CAMERA SETUP
+# ========================================
+
+cap = cv2.VideoCapture(0)
+
+track_direction_set = False
+
+DODGE_THRESHOLD_CM = 40.0
+
+last_dodge_time = 0
+
+COOLDOWN_SECONDS = 2.0
+
+
+while True:
+
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+
+    hsv = cv2.cvtColor(
+        frame,
+        cv2.COLOR_BGR2HSV
+    )
+
+
+    # ========================================
+    # ORANGE
+    # ========================================
+
+    lower_orange = np.array(
+        [10, 100, 100]
+    )
+
+    upper_orange = np.array(
+        [25, 255, 255]
+    )
+
+    orange_mask = cv2.inRange(
+        hsv,
+        lower_orange,
+        upper_orange
+    )
+
+
+    # ========================================
+    # BLUE
+    # ========================================
+
+    lower_blue = np.array(
+        [85, 50, 100]
+    )
+
+    upper_blue = np.array(
+        [130, 255, 255]
+    )
+
+    blue_mask = cv2.inRange(
+        hsv,
+        lower_blue,
+        upper_blue
+    )
+
+
+    # ========================================
+    # GREEN
+    # ========================================
+
+    lower_green = np.array(
+        [35, 50, 50]
+    )
+
+    upper_green = np.array(
+        [85, 255, 255]
+    )
+
+    green_mask = cv2.inRange(
+        hsv,
+        lower_green,
+        upper_green
+    )
+
+
+    # ========================================
+    # RED
+    # ========================================
+
+    lower_red1 = np.array(
+        [0, 120, 70]
+    )
+
+    upper_red1 = np.array(
+        [10, 255, 255]
+    )
+
+    lower_red2 = np.array(
+        [170, 120, 70]
+    )
+
+    upper_red2 = np.array(
+        [180, 255, 255]
+    )
+
+    red_mask = (
+        cv2.inRange(
+            hsv,
+            lower_red1,
+            upper_red1
+        )
+        +
+        cv2.inRange(
+            hsv,
+            lower_red2,
+            upper_red2
+        )
+    )
+
+
+    # ========================================
+    # PHASE 1
+    # TRACK DIRECTION
+    # ========================================
+
+    if not track_direction_set:
+
+        orange_bottom_y = -1
+
+        blue_bottom_y = -1
+
+
+        # Orange contours
+
+        orange_contours, _ = cv2.findContours(
+            orange_mask,
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE
+        )
+
+
+        for contour in orange_contours:
+
+            if cv2.contourArea(contour) > 500:
+
+                x, y, w, h = cv2.boundingRect(
+                    contour
+                )
+
+                orange_bottom_y = y + h
+
+                break
+
+
+        # Blue contours
+
+        blue_contours, _ = cv2.findContours(
+            blue_mask,
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE
+        )
+
+
+        for contour in blue_contours:
+
+            if cv2.contourArea(contour) > 500:
+
+                x, y, w, h = cv2.boundingRect(
+                    contour
+                )
+
+                blue_bottom_y = y + h
+
+                break
+
+
+        # Determine direction
+
+        if (
+            orange_bottom_y != -1
+            and blue_bottom_y != -1
+        ):
+
+            if orange_bottom_y > blue_bottom_y:
+
+                print(
+                    "Orange is closer. "
+                    "Inner track = RIGHT."
+                )
+
+                if arduino:
+
+                    arduino.write(
+                        b']'
+                    )
+
+                track_direction_set = True
+
+
+            elif blue_bottom_y > orange_bottom_y:
+
+                print(
+                    "Blue is closer. "
+                    "Inner track = LEFT."
+                )
+
+                if arduino:
+
+                    arduino.write(
+                        b'['
+                    )
+
+                track_direction_set = True
+
+
+    # ========================================
+    # PHASE 2
+    # OBSTACLE DODGING
+    # ========================================
+
+    else:
+
+        closest_distance = 999.0
+
+        target_action = None
+
+        closest_colour = "None"
+
+
+        # ========================================
+        # RED OBSTACLE
+        # ========================================
+
+        red_contours, _ = cv2.findContours(
+            red_mask,
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE
+        )
+
+
+        for contour in red_contours:
+
+            if cv2.contourArea(contour) > 500:
+
+                x, y, w, h = cv2.boundingRect(
+                    contour
+                )
+
+                REAL_WIDTH = 4.8
+
+                FOCAL_LENGTH = 500.0
+
+                distance = (
+                    REAL_WIDTH *
+                    FOCAL_LENGTH
+                ) / w
+
+
+                if distance < closest_distance:
+
+                    closest_distance = distance
+
+                    closest_colour = "Red"
+
+                    target_action = b'R'
+
+
+        # ========================================
+        # GREEN OBSTACLE
+        # ========================================
+
+        green_contours, _ = cv2.findContours(
+            green_mask,
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE
+        )
+
+
+        for contour in green_contours:
+
+            if cv2.contourArea(contour) > 500:
+
+                x, y, w, h = cv2.boundingRect(
+                    contour
+                )
+
+                REAL_WIDTH = 4.8
+
+                FOCAL_LENGTH = 496.875
+
+                distance = (
+                    REAL_WIDTH *
+                    FOCAL_LENGTH
+                ) / w
+
+
+                if distance < closest_distance:
+
+                    closest_distance = distance
+
+                    closest_colour = "Green"
+
+                    target_action = b'L'
+
+
+        # ========================================
+        # EXECUTE DODGE
+        # ========================================
+
+        current_time = time.time()
+
+
+        if (
+            target_action is not None
+            and closest_distance
+            < DODGE_THRESHOLD_CM
+        ):
+
+            if (
+                current_time
+                - last_dodge_time
+            ) > COOLDOWN_SECONDS:
+
+                print(
+                    f"Dodging {closest_colour}! "
+                    f"Distance: "
+                    f"{closest_distance:.1f} cm"
+                )
+
+
+                if arduino:
+
+                    arduino.write(
+                        target_action
+                    )
+
+
+                last_dodge_time = current_time
+
+
+    cv2.imshow(
+        "Webcam",
+        frame
+    )
+
+
+    if (
+        cv2.waitKey(1) & 0xFF
+        == ord('q')
+    ):
+
+        break
+
+
+cap.release()
+
+cv2.destroyAllWindows()
+
+if arduino:
+
+    arduino.close()
+```
+
+## Explanation
+
+### Track Direction
+
+The first phase detects the orange and blue markers.
+
+The relative Y-position of the markers determines which side is the inner side of the track.
+
+The result is sent to the Arduino.
+
+---
+
+### Obstacle Detection
+
+Once the track direction has been established, the program switches to obstacle detection.
+
+The robot detects:
+
+- 🔴 **Red obstacles**
+- 🟢 **Green obstacles**
+
+The system estimates the distance to each obstacle.
+
+---
+
+### Closest Obstacle
+
+The program starts with:
+
+```python
+closest_distance = 999.0
+```
+
+Whenever a detected obstacle is closer than the current closest obstacle, it becomes the new target.
+
+This means that if multiple obstacles are visible, the robot prioritises the closest one.
+
+---
+
+### Dodge Direction
+
+The colour of the obstacle determines the dodge command.
+
+| Colour | Dodge Direction | Command |
+|---|---|---|
+| Red | Right | `R` |
+| Green | Left | `L` |
+
+---
+
+### Dodge Threshold
+
+The robot only performs an avoidance manoeuvre when:
+
+```python
+closest_distance < 40.0
+```
+
+This prevents it from reacting to obstacles that are too far away.
+
+---
+
+### Cooldown
+
+A two-second cooldown is used between dodge commands.
+
+This prevents repeated commands from being sent continuously while the robot is already performing an avoidance manoeuvre.
+
+---
+
+# 7. Overall Computer Vision Pipeline
+
+```text
+┌─────────────────────┐
+│ Raspberry Pi Camera │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│ Convert BGR → HSV   │
+└──────────┬──────────┘
+           ↓
+┌──────────────────────────────┐
+│       Colour Detection       │
+│                              │
+│ Orange │ Blue │ Red │ Green  │
+└──────────┬───────────────────┘
+           ↓
+      ┌────┴─────┐
+      ↓          ↓
+ Track Direction  Obstacles
+      ↓          ↓
+ Orange/Blue    Red/Green
+      ↓          ↓
+ Direction     Distance
+      └────┬─────┘
+           ↓
+┌─────────────────────┐
+│   Decision Making   │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│ Serial Communication│
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│       Arduino       │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│ Robot Movement      │
+└─────────────────────┘
+```
+
+# 8. Development Progression
+
+| Stage | System Developed | Purpose |
+|---:|---|---|
+| 1 | HSV Tuner | Calibrate colour ranges |
+| 2 | Basic Colour Detection | Detect coloured objects |
+| 3 | Orange/Blue Detection | Detect track markers |
+| 4 | Track Direction | Determine inner track direction |
+| 5 | Black Line Detection | Determine line position in camera |
+| 6 | Distance Estimation | Estimate obstacle distance |
+| 7 | Red/Green Detection | Identify obstacles |
+| 8 | Obstacle Avoidance | Select dodge direction |
+| 9 | Serial Communication | Send decisions to Arduino |
+
+# 9. Hardware and Software
+
+## Hardware
+
+- Raspberry Pi
+- Raspberry Pi Camera
+- Arduino
+- Motor Driver
+- Motors
+- Robot Chassis
+
+## Software
+
+- Python
+- OpenCV
+- NumPy
+- PySerial
+
+## Python Libraries
+
+```python
+import cv2
+import numpy as np
+import serial
+import time
+```
+
+| Library | Purpose |
+|---|---|
+| `OpenCV` | Camera capture, colour detection and image processing |
+| `NumPy` | HSV arrays and numerical calculations |
+| `PySerial` | Raspberry Pi–Arduino communication |
+| `time` | Timing and cooldown control |
+
+# 10. Summary
+
+The computer vision system was developed progressively rather than creating the complete autonomous program immediately.
+
+The **HSV tuner** was first used to calibrate the colour ranges for the camera.
+
+The calibrated ranges were then used to detect the **orange and blue track markers**, **red and green obstacles**, and the **black track line**.
+
+Distance estimation was added to determine how close an obstacle was to the robot.
+
+Finally, the individual systems were combined with **serial communication** so that the Raspberry Pi could make decisions and send commands to the Arduino.
+
+The overall system follows:
+
+> **Camera → HSV Processing → Colour Detection → Position/Distance → Decision → Serial Communication → Arduino → Robot Movement**
+
 
 ---
 
