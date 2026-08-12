@@ -880,7 +880,7 @@ The focal length was calibrated for the camera setup before being used in the ob
 
 ---
 
-# 6. Complete Obstacle Detection and Avoidance
+# 5. Complete Obstacle Detection and Avoidance
 
 ## Objective
 
