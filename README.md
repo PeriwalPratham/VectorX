@@ -219,8 +219,7 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 
 ### 3.3 Multi-View Photographs
 ### 3.4 Demonstration Videos
-* **Open Challenge Demonstration Video:** [YouTube Link]
-* **Obstacle Challenge Demonstration Video:** [YouTube Link]
+Link for the video - https://www.youtube.com/watch?v=WkW-i0pZRSE
 
 ---
 
