@@ -863,14 +863,13 @@ Individual hardware components and detection algorithms were each validated with
 | [`MPU_Heading_Test.ino`](Component_test_code/mpu_heading_test.ino) | MPU6050 | Calibrates Z-axis gyro bias (300-sample average) at startup, then integrates heading over time to check drift-corrected yaw tracking |
 | [`Camera_Test.py`](Component_test_code/Pi_cam.py) | Pi Camera 3 Wide | Confirms basic frame capture from the Pi |
 
-**Vision / detection algorithms**
+**Vision/detection algorithms**
 
 | Test | What it verifies |
 |:---|:---|
-| [`08_hsv_calibrator.py`](Component_test_code/08_hsv_calibrator.py) | Interactive tool to find HSV threshold ranges for each color — used to generate the values plugged into the detection scripts below |
-| [`09_red_green_test.py`](Component_test_code/09_red_green_test.py) | Red/green traffic pillar detection (bounding box, centre, angle) — for Obstacle Challenge pillar avoidance |
-| [`10_blue_orange_test.py`](Component_test_code/10_blue_orange_test.py) | Orange/blue start-direction line detection — same algorithm used in Section 8.2 |
-| [`pink_parking_test.py`](Component_test_code/pink_parking_test.py) | Magenta parking-zone detection (bounding box, centre, width/height, area) — used in the parking strategy (Section 8.6) |
+| [`HSV_Calibrator.py](Component_test_code/Hsv_calibration_test.py) | Interactive tool to find HSV threshold ranges for each color — used to generate the values plugged into the detection scripts below |
+| [`Orange_Blue_Test.py`](Test_Code/orange_blue_marker.py) | Orange/blue start-direction line detection — same algorithm used in Section 8.2 |
+| [`Pink_Parking_Test.py`](Component_test_code/pink_plate_parking.py) | Magenta parking-zone detection (bounding box, centre, width/height, area) — used in the parking strategy (Section 8.6) |
 
 **Low-level diagnostics**
 
