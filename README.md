@@ -850,18 +850,18 @@ Individual hardware components and detection algorithms were each validated with
 
 | Test | Hardware | What it verifies |
 |:---|:---|:---|
-| [`Servo_test.ino`](Component_test_code/Servo_test.ino) | Steering servo (D9) | Automatic sweep across LEFT/CENTRE/RIGHT, plus manual angle entry over serial, to confirm range and check for jitter or calibration drift |
-| [`Motor_test.ino`](Component_test_code/motor_test.ino) | N20 drive motor (PWM D11, direction D13) | Verifies direction control and speed (PWM) response |
-| [`Buzzer_test.ino`](Component_test_code/Buzzer_test.ino) | Buzzer (D4) | Confirms wiring and plays multiple frequency/beep patterns |
+| [`Servo_Test.ino`](Component_test_code/Servo_test.ino) | Steering servo (D9) | Automatic sweep across LEFT/CENTRE/RIGHT, plus manual angle entry over serial, to confirm range and check for jitter or calibration drift |
+| [`Motor_Test.ino`](Component_test_code/motor_test.ino) | N20 drive motor (PWM D11, direction D13) | Verifies direction control and speed (PWM) response |
+| [`Buzzer_Test.ino`](Component_test_code/Buzzer_test.ino) | Buzzer (D4) | Confirms wiring and plays multiple frequency/beep patterns |
 
 **Sensors**
 
 | Test | Hardware | What it verifies |
 |:---|:---|:---|
-| [`04_single_vl53l0x_test.ino`](Component_test_code/04_single_vl53l0x_test.ino) | 1× VL53L0X ToF | Confirms basic range readings from a single sensor before adding the I2C-addressing complexity of running two on the same bus |
-| [`03_dual_vl53l0x_test.ino`](Component_test_code/03_dual_vl53l0x_test.ino) | 2× VL53L0X ToF | Validates the XSHUT-based sequential re-addressing (`0x30` left / `0x31` right) needed to run both sensors on one I2C bus |
-| [`mpu_heading_test.ino`](Component_test_code/mpu_heading_test.ino) | MPU6050 | Calibrates Z-axis gyro bias (300-sample average) at startup, then integrates heading over time to check drift-corrected yaw tracking |
-| [`07_camera_test.py`](Component_test_code/07_camera_test.py) | Pi Camera 3 Wide | Confirms basic frame capture from the Pi |
+| [`Single ToF.ino`](Component_test_code/single_tof.ino) | 1× VL53L0X ToF | Confirms basic range readings from a single sensor before adding the I2C-addressing complexity of running two on the same bus |
+| [`Dual ToF.ino`](Component_test_code/Double_tof.ino) | 2× VL53L0X ToF | Validates the XSHUT-based sequential re-addressing (`0x30` left / `0x31` right) needed to run both sensors on one I2C bus |
+| [`MPU_Heading_Test.ino`](Component_test_code/mpu_heading_test.ino) | MPU6050 | Calibrates Z-axis gyro bias (300-sample average) at startup, then integrates heading over time to check drift-corrected yaw tracking |
+| [`Camera_Test.py`](Component_test_code/Pi_cam.py) | Pi Camera 3 Wide | Confirms basic frame capture from the Pi |
 
 **Vision / detection algorithms**
 
