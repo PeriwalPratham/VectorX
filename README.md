@@ -1085,23 +1085,10 @@ The overall system follows:
 
 ---
 
-## 10. Testing, Calibration & Iteration
+## 10. Reproducing VectorX
 
-### 10.1 Testing Methodology
-### 10.2 Component Testing
-### 10.3 Subsystem Testing
-### 10.4 Full-System Testing
-### 10.5 Calibration Procedures
-### 10.6 Test Results
-### 10.7 Design Iterations
-### 10.8 Problems & Solutions
-
----
-
-## 11. Reproducing VectorX
-
-### 11.1 Hardware Requirements
-### 11.2 Bill of Materials (BOM)
+### 10.1 Hardware Requirements
+### 10.2 Bill of Materials (BOM)
 ## Bill of Materials (BOM)
 
 | Component | Description / Spec | Qty | Unit Cost (₹) | Total Cost (₹) |
@@ -1126,30 +1113,25 @@ The overall system follows:
 | Miscellenaous Cost | Includes testing components, alternatives, wires, etc | 1 | ₹10,000 | ₹10,000 |
 | **Total Build Cost** | | | | **₹57,900** |
 
-### 11.3 CAD & Manufacturing Files
-### 11.4 Wiring Instructions
-### 11.5 Software Requirements
-### 11.6 Installation
-### 11.7 Building / Compiling
-### 11.8 Uploading to Controllers
-### 11.9 Configuration
-### 11.10 Calibration
-### 11.11 Running VectorX
+### 10.3 CAD & Manufacturing Files
+### 10.4 Wiring Instructions
+### 10.5 Software Requirements
+### 10.6 Installation
+### 10.7 Building / Compiling
+### 10.8 Uploading to Controllers
+### 10.9 Configuration
+### 10.10 Calibration
+### 10.11 Running VectorX
 
 ---
 
-## 12. Repository Guide
+## 11. Repository Guide
 
-### 12.1 Repository Structure
-### 12.2 Folder Descriptions
-### 12.3 Where to Find What
-### 12.4 Version History
+### 11.1 Repository Structure
+### 11.2 Folder Descriptions
+### 11.3 Where to Find What
+### 11.4 Version History
 
----
-
-## 13. Engineering Journal
-
----
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
