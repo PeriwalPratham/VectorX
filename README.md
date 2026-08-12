@@ -175,7 +175,8 @@ We wanted a clean, modern logo for our team. The design uses a styled 'X' with s
 
 ### 3.1 Vehicle Overview
 
-<img width="1269" height="780" alt="PHOTO-2026-08-12-20-29-48" src="https://github.com/user-attachments/assets/0f789ca7-c574-4268-8005-e3a1f7799e0c" />
+<img width="1331" height="842" alt="image" src="https://github.com/user-attachments/assets/e9a264a6-3ccf-4cf4-9c14-0d3c636b2736" />
+
 
 
 Our Robot has been made after many iterations, with changes in ideology and thought; each component has been tested multiple times before being added to our build. Many parts have been tested against other components in the same category to see which fit our build ideology better. The main goal of our build has been to be simple,efficient and reliable while keeping up with the latest trends.
