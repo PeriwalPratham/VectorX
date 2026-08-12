@@ -1,0 +1,162 @@
+import cv2
+import numpy as np
+
+cap = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    # ---------------- GREEN ----------------
+
+    lower_green = np.array([35, 50, 50])
+    upper_green = np.array([85, 255, 255])
+
+    green_mask = cv2.inRange(
+        hsv,
+        lower_green,
+        upper_green
+    )
+
+    green_contours, _ = cv2.findContours(
+        green_mask,
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    for contour in green_contours:
+
+        if cv2.contourArea(contour) > 500:
+
+            x, y, w, h = cv2.boundingRect(contour)
+
+            # Actual width of the green object in cm
+            REAL_WIDTH = 4.8
+
+            # Calibrated focal length
+            FOCAL_LENGTH = 496.875
+
+            # Distance calculation
+            distance = (REAL_WIDTH * FOCAL_LENGTH) / w
+
+            print(f"Approx distance: {distance:.1f} cm")
+
+            cv2.rectangle(
+                frame,
+                (x, y),
+                (x + w, y + h),
+                (0, 255, 0),
+                2
+            )
+
+    # ---------------- RED ----------------
+
+    lower_red1 = np.array([0, 120, 70])
+    upper_red1 = np.array([10, 255, 255])
+
+    lower_red2 = np.array([170, 120, 70])
+    upper_red2 = np.array([180, 255, 255])
+
+    mask1 = cv2.inRange(
+        hsv,
+        lower_red1,
+        upper_red1
+    )
+
+    mask2 = cv2.inRange(
+        hsv,
+        lower_red2,
+        upper_red2
+    )
+
+    red_mask = mask1 + mask2
+
+    red_contours, _ = cv2.findContours(
+        red_mask,
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    for contour in red_contours:
+
+        if cv2.contourArea(contour) > 500:
+
+            x, y, w, h = cv2.boundingRect(contour)
+
+            # Actual width of the red object in cm
+            REAL_WIDTH = 4.8
+
+            # Calibrated focal length
+            FOCAL_LENGTH = 500
+
+            # Distance calculation
+            distance = (REAL_WIDTH * FOCAL_LENGTH) / w
+
+            print(f"Approx distance: {distance:.1f} cm")
+
+            cv2.rectangle(
+                frame,
+                (x, y),
+                (x + w, y + h),
+                (0, 0, 255),
+                2
+            )
+
+    # ---------------- PINK ----------------
+
+    lower_pink = np.array([145, 80, 80])
+    upper_pink = np.array([169, 255, 255])
+
+    pink_mask = cv2.inRange(
+        hsv,
+        lower_pink,
+        upper_pink
+    )
+
+    pink_contours, _ = cv2.findContours(
+        pink_mask,
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    for contour in pink_contours:
+
+        if cv2.contourArea(contour) > 200:
+
+            x, y, w, h = cv2.boundingRect(contour)
+
+            # Actual width of the pink object in cm
+            REAL_WIDTH = 10
+
+            # Calibrated focal length
+            FOCAL_LENGTH = 532.5
+
+            # Distance calculation
+            distance = (REAL_WIDTH * FOCAL_LENGTH) / w
+
+            print(f"Approx distance: {distance:.1f} cm")
+
+            cv2.rectangle(
+                frame,
+                (x, y),
+                (x + w, y + h),
+                (0, 255, 255),
+                4
+            )
+
+    # ---------------- DISPLAY ----------------
+
+    cv2.imshow("Webcam", frame)
+    cv2.imshow("Green Mask", green_mask)
+    cv2.imshow("Red Mask", red_mask)
+    cv2.imshow("Pink Mask", pink_mask)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
