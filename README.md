@@ -217,7 +217,7 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 
 ### 3.3 Multi-View Photographs
 **Front View**
-<img src="Robot Pics/Front View.png" width="400" alt="Front View"/>
+<img src="Robot Pics/Front View.HIEC.png" width="400" alt="Front View"/>
 
 **Back View**
 ![Back View](https://github.com/user-attachments/assets/35be19b9-088e-4b59-8e0e-d6e7ea85bc33)
