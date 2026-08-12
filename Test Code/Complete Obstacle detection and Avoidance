@@ -1,0 +1,393 @@
+import cv2
+import numpy as np
+import serial
+import time
+
+
+# ========================================
+# SERIAL SETUP
+# ========================================
+
+try:
+
+    arduino = serial.Serial(
+        '/dev/ttyUSB0',
+        115200,
+        timeout=1
+    )
+
+    time.sleep(2)
+
+    print("Connected to Arduino.")
+
+except Exception as e:
+
+    print(
+        f"Serial connection failed: {e}"
+    )
+
+    arduino = None
+
+
+# ========================================
+# CAMERA SETUP
+# ========================================
+
+cap = cv2.VideoCapture(0)
+
+track_direction_set = False
+
+DODGE_THRESHOLD_CM = 40.0
+
+last_dodge_time = 0
+
+COOLDOWN_SECONDS = 2.0
+
+
+while True:
+
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+
+    hsv = cv2.cvtColor(
+        frame,
+        cv2.COLOR_BGR2HSV
+    )
+
+
+    # ========================================
+    # ORANGE
+    # ========================================
+
+    lower_orange = np.array(
+        [10, 100, 100]
+    )
+
+    upper_orange = np.array(
+        [25, 255, 255]
+    )
+
+    orange_mask = cv2.inRange(
+        hsv,
+        lower_orange,
+        upper_orange
+    )
+
+
+    # ========================================
+    # BLUE
+    # ========================================
+
+    lower_blue = np.array(
+        [85, 50, 100]
+    )
+
+    upper_blue = np.array(
+        [130, 255, 255]
+    )
+
+    blue_mask = cv2.inRange(
+        hsv,
+        lower_blue,
+        upper_blue
+    )
+
+
+    # ========================================
+    # GREEN
+    # ========================================
+
+    lower_green = np.array(
+        [35, 50, 50]
+    )
+
+    upper_green = np.array(
+        [85, 255, 255]
+    )
+
+    green_mask = cv2.inRange(
+        hsv,
+        lower_green,
+        upper_green
+    )
+
+
+    # ========================================
+    # RED
+    # ========================================
+
+    lower_red1 = np.array(
+        [0, 120, 70]
+    )
+
+    upper_red1 = np.array(
+        [10, 255, 255]
+    )
+
+    lower_red2 = np.array(
+        [170, 120, 70]
+    )
+
+    upper_red2 = np.array(
+        [180, 255, 255]
+    )
+
+    red_mask = (
+        cv2.inRange(
+            hsv,
+            lower_red1,
+            upper_red1
+        )
+        +
+        cv2.inRange(
+            hsv,
+            lower_red2,
+            upper_red2
+        )
+    )
+
+
+    # ========================================
+    # PHASE 1
+    # TRACK DIRECTION
+    # ========================================
+
+    if not track_direction_set:
+
+        orange_bottom_y = -1
+
+        blue_bottom_y = -1
+
+
+        # Orange contours
+
+        orange_contours, _ = cv2.findContours(
+            orange_mask,
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE
+        )
+
+
+        for contour in orange_contours:
+
+            if cv2.contourArea(contour) > 500:
+
+                x, y, w, h = cv2.boundingRect(
+                    contour
+                )
+
+                orange_bottom_y = y + h
+
+                break
+
+
+        # Blue contours
+
+        blue_contours, _ = cv2.findContours(
+            blue_mask,
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE
+        )
+
+
+        for contour in blue_contours:
+
+            if cv2.contourArea(contour) > 500:
+
+                x, y, w, h = cv2.boundingRect(
+                    contour
+                )
+
+                blue_bottom_y = y + h
+
+                break
+
+
+        # Determine direction
+
+        if (
+            orange_bottom_y != -1
+            and blue_bottom_y != -1
+        ):
+
+            if orange_bottom_y > blue_bottom_y:
+
+                print(
+                    "Orange is closer. "
+                    "Inner track = RIGHT."
+                )
+
+                if arduino:
+
+                    arduino.write(
+                        b']'
+                    )
+
+                track_direction_set = True
+
+
+            elif blue_bottom_y > orange_bottom_y:
+
+                print(
+                    "Blue is closer. "
+                    "Inner track = LEFT."
+                )
+
+                if arduino:
+
+                    arduino.write(
+                        b'['
+                    )
+
+                track_direction_set = True
+
+
+    # ========================================
+    # PHASE 2
+    # OBSTACLE DODGING
+    # ========================================
+
+    else:
+
+        closest_distance = 999.0
+
+        target_action = None
+
+        closest_colour = "None"
+
+
+        # ========================================
+        # RED OBSTACLE
+        # ========================================
+
+        red_contours, _ = cv2.findContours(
+            red_mask,
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE
+        )
+
+
+        for contour in red_contours:
+
+            if cv2.contourArea(contour) > 500:
+
+                x, y, w, h = cv2.boundingRect(
+                    contour
+                )
+
+                REAL_WIDTH = 4.8
+
+                FOCAL_LENGTH = 500.0
+
+                distance = (
+                    REAL_WIDTH *
+                    FOCAL_LENGTH
+                ) / w
+
+
+                if distance < closest_distance:
+
+                    closest_distance = distance
+
+                    closest_colour = "Red"
+
+                    target_action = b'R'
+
+
+        # ========================================
+        # GREEN OBSTACLE
+        # ========================================
+
+        green_contours, _ = cv2.findContours(
+            green_mask,
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE
+        )
+
+
+        for contour in green_contours:
+
+            if cv2.contourArea(contour) > 500:
+
+                x, y, w, h = cv2.boundingRect(
+                    contour
+                )
+
+                REAL_WIDTH = 4.8
+
+                FOCAL_LENGTH = 496.875
+
+                distance = (
+                    REAL_WIDTH *
+                    FOCAL_LENGTH
+                ) / w
+
+
+                if distance < closest_distance:
+
+                    closest_distance = distance
+
+                    closest_colour = "Green"
+
+                    target_action = b'L'
+
+
+        # ========================================
+        # EXECUTE DODGE
+        # ========================================
+
+        current_time = time.time()
+
+
+        if (
+            target_action is not None
+            and closest_distance
+            < DODGE_THRESHOLD_CM
+        ):
+
+            if (
+                current_time
+                - last_dodge_time
+            ) > COOLDOWN_SECONDS:
+
+                print(
+                    f"Dodging {closest_colour}! "
+                    f"Distance: "
+                    f"{closest_distance:.1f} cm"
+                )
+
+
+                if arduino:
+
+                    arduino.write(
+                        target_action
+                    )
+
+
+                last_dodge_time = current_time
+
+
+    cv2.imshow(
+        "Webcam",
+        frame
+    )
+
+
+    if (
+        cv2.waitKey(1) & 0xFF
+        == ord('q')
+    ):
+
+        break
+
+
+cap.release()
+
+cv2.destroyAllWindows()
+
+if arduino:
+
+    arduino.close()
