@@ -11,4 +11,4 @@ I love experimenting with new code, building hands-on projects, and transforming
 
 I believe that every project is an opportunity to learn something new, and I am constantly looking for ways to improve my technical skills and broaden my understanding of robotics and automation.
 
-**Role -** tbd
+**Role -** Computer Vision Lead
