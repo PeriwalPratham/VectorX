@@ -481,14 +481,16 @@ An 11.1V 3S LiPo battery (3700 mAh) was chosen as the primary power source. The 
 Sensors are placed strategically around the vehicle chassis to optimize spatial coverage and minimize rotational movement artifacts:
 
 ```text
-       [ PI CAMERA 3 WIDE ] (Centered, 120° FOV)
-                |
-     +----------+----------+
-     |          |          |
-[ ToF #1 Left ] [ ToF #2 Center ] [ ToF #3 Right ]
- (Angled 90°)     (Facing 0°)     (Angled 90°)
-                |
-        [ MPU6050 IMU ] (Centered at CG)
+                 [ PI CAMERA 3 WIDE ]
+                 (Centered, 120° FOV)
+                          |
+      +-------------------+-------------------+
+      |                   |                   |
+[ ToF #1 Left ]   [ ToF #2 Center ]   [ ToF #3 Right ]
+  (Angled 90°)       (Facing 0°)        (Angled 90°)
+                          |
+                 [ MPU6050 IMU ]
+                 (Centered at CG)
 ```
 
 - **Center ToF (0°):** Monitors forward distance to obstacles, wall limits, and braking boundaries.
