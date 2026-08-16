@@ -563,7 +563,7 @@ Files are currently written as single monolithic files (one `.ino`/`.py` per rol
 | Function | Responsibility |
 |:---|:---|
 | `send_command()` | Writes an ASCII command + newline to the Arduino over serial and flushes the buffer immediately. |
-| `detect_start_direction()` | Captures live frames, masks for orange vs. blue floor markings within a cropped scan zone, and returns `"CW"` or `"CCW"` based on which color has more matching pixels (with a 3-second timeout defaulting to `"CW"`). |
+| `detect_start_direction()` | Captures live frames, masks for orange vs. blue floor markings within a cropped scan zone, and returns `"CW"` or `"CCW"` based on which color is closer on the y-axis. |
 | Main block | Runs direction detection once, sends the `START_<direction>` command, then listens for Arduino status messages (printing them) until `ALL_TURNS_DONE_STOPPING` is received or the user interrupts with `Ctrl+C` (which sends `STOP`). |
 
 ### 7.4 Control Flow & State Machine
