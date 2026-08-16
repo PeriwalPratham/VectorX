@@ -486,13 +486,13 @@ Sensors are placed strategically around the vehicle chassis to optimize spatial 
      +----------+----------+
      |          |          |
 [ ToF #1 Left ] [ ToF #2 Center ] [ ToF #3 Right ]
- (Angled 45°)     (Facing 0°)     (Angled 45°)
+ (Angled 90°)     (Facing 0°)     (Angled 90°)
                 |
         [ MPU6050 IMU ] (Centered at CG)
 ```
 
 - **Center ToF (0°):** Monitors forward distance to obstacles, wall limits, and braking boundaries.
-- **Left & Right ToFs (45°):** Detect lateral wall clearance for proportional steering adjustments in narrow corridors.
+- **Left & Right ToFs (90°):** Directly perpendicular
 - **Central IMU:** Positioned at the vehicle's Center of Gravity (CG) to eliminate parasitic linear acceleration offsets on rotational gyro readings.
 
 ### 6.7 Sensor Calibration
