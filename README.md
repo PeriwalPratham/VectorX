@@ -572,11 +572,11 @@ The Arduino's `loop()` implements a simple two-state machine driven by the `isRu
 
 ```text
         ┌────────────┐   "START_CW" / "START_CCW"   ┌─────────────┐
-        │   IDLE      │ ────────────────────────────▶│   RUNNING   │
-        │ (servo      │                               │ (wall-      │
-        │  centered,  │◀──────────────────────────────│  following, │
-        │  motor off) │   "STOP"  OR  turnCount ≥ 13   │  turn count) │
-        └────────────┘                               └─────────────┘
+        │   IDLE     │────────────────────────────▶ │  RUNNING    │
+        │ (servo     │                              │ (wall-      │
+        │  centered, │◀─────────────────────────────│  following, │
+        │  motor off)│  "STOP"  OR  turnCount ≥ 13  │ turn count) │
+        └────────────┘                              └─────────────┘
 ```
 
 - **IDLE:** Motor stopped, servo held at `STRAIGHT`. The robot waits here until it receives a `START` command over serial.
