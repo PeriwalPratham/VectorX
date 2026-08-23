@@ -957,6 +957,10 @@ For exact wiring, see Section 11.4; for software setup, Section 11.5–11.6.
 
 ### 11.3 CAD & Manufacturing Files
 
+![CAD Iteration 1](./Cad/cad-iteration1.jpeg)
+![CAD Iteration 2](./Cad/cad-iteration2.jpeg)
+![CAD Iteration 3](./Cad/cad-iteration3.png)
+
 ### 11.4 Wiring Instructions
 
 The full circuit schematic below shows every connection in the build. Power wiring is shown in red (positive) and black (ground); signal wiring is color-coded by bus: blue for I2C and PWM/digital control lines, gold for XSHUT and encoder lines, and gray for the USB link between the Raspberry Pi 5 and Arduino Uno.
