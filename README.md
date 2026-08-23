@@ -945,7 +945,7 @@ For exact wiring, see Section 11.4; for software setup, Section 11.5–11.6.
 | 5V 5A Buck Converter | DC-DC step-down module | 1 | ₹250 | ₹250 |
 | 12V N20 300rpm motor with Encoder | Metal-gear DC motor with integrated quadrature encoder | 1 | ₹450 | ₹450 |
 | MPU6050 | 6-axis IMU, I2C interface | 1 | ₹150 | ₹150 |
-| Lego Differential Gear | Differential gear assembly for rear-axle power split | 1 | – | ₹0 |
+| Lego Differential Gear | Differential gear assembly for rear-axle power split | 1 | ₹2000 | ₹2000 |
 | REV Robotics Smart Robot Servo | High-torque smart servo | 1 | ₹5,000 | ₹5,000 |
 | Power Distribution Board | Board for splitting battery power to multiple modules | 1 | ₹250 | ₹250 |
 | Breadboard | For splitting pins into multiple points | 1 | ₹100 | ₹100 |
