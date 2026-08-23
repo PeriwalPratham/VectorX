@@ -957,19 +957,19 @@ For exact wiring, see Section 11.4; for software setup, Section 11.5–11.6.
 ### 11.3 CAD & Manufacturing Files
 
 <p align="center">
-  <b>CAD Iteration 1</b>
+  <h3>CAD Iteration 1</h3>
   <br>
   <img src="./Cad/cad-iteration1.jpeg" alt="CAD Iteration 1" />
 </p>
 
 <p align="center">
-  <b>CAD Iteration 2</b>
+  <h3>CAD Iteration 2</h3>
   <br>
   <img src="./Cad/cad-iteration2.jpeg" alt="CAD Iteration 2" />
 </p>
 
 <p align="center">
-  <b>CAD Iteration 3</b>
+  <h3>CAD Iteration 3</h3>
   <br>
   <img src="./Cad/cad-iteration3.png" alt="CAD Iteration 3" />
 </p>
