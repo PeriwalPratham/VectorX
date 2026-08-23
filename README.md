@@ -521,7 +521,7 @@ Yaw_rate_corrected = Yaw_rate_raw - G_off
 
 The complete wiring layout below illustrates every pin-to-pin signal and power connection.
 
-<img width="942" height="560" alt="Screenshot 2026-08-12 at 8 41 02 PM" src="https://github.com/user-attachments/assets/dfa898cf-7621-469a-8d6d-ada56d65b1e7" />
+<img width="950" height="525" alt="image" src="https://github.com/user-attachments/assets/ddabf051-4668-4bd9-92e0-b3413d9a8612" />
 
 **Pre-Power Hardware Safety Checklist:**
 1. Verify common ground continuity between Battery (–), PDB GND, Buck Converter GND, Pi 5 GND, Arduino GND, and Motor Driver GND.
@@ -976,9 +976,9 @@ For exact wiring, see Section 11.4; for software setup, Section 11.5–11.6.
 
 ### 11.4 Wiring Instructions
 
-The full circuit schematic below shows every connection in the build. Power wiring is shown in red (positive) and black (ground); signal wiring is color-coded by bus: blue for I2C and PWM/digital control lines, gold for XSHUT and encoder lines, and gray for the USB link between the Raspberry Pi 5 and Arduino Uno.
+The full circuit schematic below shows every connection in the build.
 
-<img width="942" height="560" alt="Full wiring schematic" src="https://github.com/user-attachments/assets/dfa898cf-7621-469a-8d6d-ada56d65b1e7" />
+<img width="950" height="525" alt="image" src="https://github.com/user-attachments/assets/ddabf051-4668-4bd9-92e0-b3413d9a8612" />
 
 *Figure 11.1: Full wiring schematic (same as Figure 6.1).*
 
