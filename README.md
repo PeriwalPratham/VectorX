@@ -178,7 +178,6 @@ We wanted a clean, modern logo for our team. The design uses a styled 'X' with s
 <img width="1331" height="842" alt="image" src="https://github.com/user-attachments/assets/e9a264a6-3ccf-4cf4-9c14-0d3c636b2736" />
 
 
-
 Our Robot has been made after many iterations, with changes in ideology and thought; each component has been tested multiple times before being added to our build. Many parts have been tested against other components in the same category to see which fit our build ideology better. The main goal of our build has been to be simple,efficient and reliable while keeping up with the latest trends.
 
 ### 3.2 Key Specifications & Hardware Summary
@@ -236,7 +235,7 @@ Our Robot has been made after many iterations, with changes in ideology and thou
   </tr>
 </table>
 
-### 3.4 Demonstration Videos
+### 3.3 Demonstration Videos
 Link for the video - https://www.youtube.com/watch?v=WkW-i0pZRSE
 
 ---
@@ -957,9 +956,23 @@ For exact wiring, see Section 11.4; for software setup, Section 11.5–11.6.
 
 ### 11.3 CAD & Manufacturing Files
 
-![CAD Iteration 1](./Cad/cad-iteration1.jpeg)
-![CAD Iteration 2](./Cad/cad-iteration2.jpeg)
-![CAD Iteration 3](./Cad/cad-iteration3.png)
+<p align="center">
+  <b>CAD Iteration 1</b>
+  <br>
+  <img src="./Cad/cad-iteration1.jpeg" alt="CAD Iteration 1" />
+</p>
+
+<p align="center">
+  <b>CAD Iteration 2</b>
+  <br>
+  <img src="./Cad/cad-iteration2.jpeg" alt="CAD Iteration 2" />
+</p>
+
+<p align="center">
+  <b>CAD Iteration 3</b>
+  <br>
+  <img src="./Cad/cad-iteration3.png" alt="CAD Iteration 3" />
+</p>
 
 ### 11.4 Wiring Instructions
 
