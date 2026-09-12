@@ -222,16 +222,16 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 
 <table align="center">
   <tr>
-    <td align="center"><b>Front View</b><br><img src="Robot Photos/Front View.jpeg" width="300"></td>
-    <td align="center"><b>Back View</b><br><img src="Robot Photos/Back View.jpeg" width="300"></td>
+    <td align="center"><b>Front View</b><br><img src="Robot Photos/Front View APAC.png" width="300"></td>
+    <td align="center"><b>Back View</b><br><img src="Robot Photos/Back View APAC.png" width="300"></td>
   </tr>
   <tr>
-    <td align="center"><b>Top View</b><br><img src="Robot Photos/Top View.jpeg" width="300"></td>
-    <td align="center"><b>Bottom View</b><br><img src="Robot Photos/Bottom View.jpeg" width="300"></td>
+    <td align="center"><b>Top View</b><br><img src="Robot Photos/Top View APAC.png" width="300"></td>
+    <td align="center"><b>Bottom View</b><br><img src="Robot Photos/Bottom View APAC.png" width="300"></td>
   </tr>
   <tr>
-    <td align="center"><b>Left Side</b><br><img src="Robot Photos/Left View.jpeg" width="300"></td>
-    <td align="center"><b>Right Side</b><br><img src="Robot Photos/Right View.jpeg" width="300"></td>
+    <td align="center"><b>Left Side</b><br><img src="Robot Photos/Left View APAC.png" width="300"></td>
+    <td align="center"><b>Right Side</b><br><img src="Robot Photos/Right View APAC.png" width="300"></td>
   </tr>
 </table>
 
