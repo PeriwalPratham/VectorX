@@ -220,6 +220,8 @@ Our Robot has been made after many iterations, with changes in ideology and thou
 
 #### Multi-View Photographs
 
+<img width="864" height="864" alt="download" src="https://github.com/user-attachments/assets/57294b12-f7f8-410c-99e2-00b538ecea1f" />
+
 <table align="center">
   <tr>
     <td align="center"><b>Front View</b><br><img src="Robot Photos/Front View APAC.png" width="300"></td>
