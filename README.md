@@ -1,5 +1,5 @@
 # VectorX
-## WRO Future Engineers 2026
+## WRO Future Engineers 2026 - Asia-Pacific Championship
 
 <div align="center">
 
