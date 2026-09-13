@@ -175,7 +175,7 @@ We wanted a clean, modern logo for our team. The design uses a styled 'X' with s
 
 ### 3.1 Vehicle Overview
 
-<img src="Cad/cad-iteration4.png" width="300">
+<img src="Cad/cad-iteration4.png" width="600">
 
 We built our robot through many iterations, with evolving ideas; each component was tested multiple times before being added to the build. We tested many parts against others in the same category to see which best fit our build ideology. The main goal of our build has been to be simple, efficient, and reliable while keeping up with the latest trends.
 
