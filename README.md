@@ -175,10 +175,9 @@ We wanted a clean, modern logo for our team. The design uses a styled 'X' with s
 
 ### 3.1 Vehicle Overview
 
-<img width="1331" height="842" alt="image" src="https://github.com/user-attachments/assets/e9a264a6-3ccf-4cf4-9c14-0d3c636b2736" />
+<img src="Cad/cad-iteration4.png" width="300">
 
-
-Our Robot has been made after many iterations, with changes in ideology and thought; each component has been tested multiple times before being added to our build. Many parts have been tested against other components in the same category to see which fit our build ideology better. The main goal of our build has been to be simple,efficient and reliable while keeping up with the latest trends.
+We built our robot through many iterations, with evolving ideas; each component was tested multiple times before being added to the build. We tested many parts against others in the same category to see which best fit our build ideology. The main goal of our build has been to be simple, efficient, and reliable while keeping up with the latest trends.
 
 ### 3.2 Key Specifications & Hardware Summary
 
@@ -974,6 +973,12 @@ For exact wiring, see Section 11.4; for software setup, Section 11.5–11.6.
   <h3>CAD Iteration 3</h3>
   <br>
   <img src="./Cad/cad-iteration3.png" alt="CAD Iteration 3" />
+</p>
+
+<p align="center">
+  <h3>CAD Iteration 4</h3>
+  <br>
+  <img src="./Cad/cad-iteration4.png" alt="CAD Iteration 4" />
 </p>
 
 ### 11.4 Wiring Instructions
