@@ -85,9 +85,9 @@ No single sensor is trusted alone. The side distance sensors give the walls, the
 
 | | |
 |---|---|
-| <img src="images/pratham.jpg" width="330"> | **Pratham Periwal — Electronics Lead.** Grade 10, Podar International School. “I love physics and programming, which is what led me into robotics. I like building projects and learning about new things.” Owns the power system, the wiring harness, and board-level debugging. |
-| <img src="images/inaaya.jpg" width="330"> | **Inaaya Sood — Computer Vision Lead.** Grade 9, SVKM JV Parekh International School. “I enjoy reading, coding, painting, and 3D designing, and I am always eager to explore new technologies.” Owns the camera pipeline, the HSV tuning, and the CAD. |
-| <img src="images/swasti.jpg" width="330"> | **Swasti Kedia — Code Lead.** Grade 10, Podar International School, Powai. “I enjoy playing the piano, martial arts, reading, running, and exploring new fields. I like building things and doing hands-on work, which is what led me to robotics.” Owns the Arduino control loop, the state machine, and the sensor handling. |
+| <img src="images/pratham.jpg" width="400"> | **Pratham Periwal — Electronics Lead.** Grade 10, Podar International School. “I love physics and programming, which is what led me into robotics. I like building projects and learning about new things.” Owns the power system, the wiring harness, and board-level debugging. |
+| <img src="images/inaaya.jpg" width="400"> | **Inaaya Sood — Computer Vision Lead.** Grade 9, SVKM JV Parekh International School. “I enjoy reading, coding, painting, and 3D designing, and I am always eager to explore new technologies.” Owns the camera pipeline, the HSV tuning, and the CAD. |
+| <img src="images/swasti.jpg" width="400"> | **Swasti Kedia — Code Lead.** Grade 10, Podar International School, Powai. “I enjoy playing the piano, martial arts, reading, running, and exploring new fields. I like building things and doing hands-on work, which is what led me to robotics.” Owns the Arduino control loop, the state machine, and the sensor handling. |
 
 **The name.** A vector has a direction and a magnitude — exactly the pair of numbers our car produces every few milliseconds: where to point the wheels and how fast to go. The X is for everything we are not told in advance: the pillar layout, the driving direction, and where the track is laid out. The logo draws that idea twice: two arrows crossing at a point.
 
