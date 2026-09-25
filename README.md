@@ -7,7 +7,7 @@
 *Three students, one 3D-printed car, and a season spent making it finish the course the same way twice.*
 
 - **Open Challenge video:** https://www.youtube.com/watch?v=WkW-i0pZRSE
-- **Channel:** https://www.youtube.com/@VectorX1358
+- **Channel:** https://www.youtube.com/@VectorX6011
 
 ---
 
