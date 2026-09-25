@@ -1,6 +1,6 @@
 # VectorX — WRO Future Engineers 2026
 
-**Team 1358 · India · Asia Pacific**
+**Team 6011 · India · Asia Pacific**
 
 <p align="center"><img src="images/logo.png" width="300" alt="VectorX logo"></p>
 
